@@ -2,6 +2,16 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWeldingLog", "MyWeldingLog\MyWeldingLog.csproj", "{40224EBB-BC67-459C-83AD-776BD5437ABB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWeldingLog.Migrator", "MyWeldingLog.Migrator\MyWeldingLog.Migrator.csproj", "{E2E405CC-FFC4-4DD0-93A3-9D535532401A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{3A5602F8-0F00-4AE0-908D-26935BB02F7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWeldingLog.DAL", "MyWeldingLog.DAL\MyWeldingLog.DAL.csproj", "{E68C40B9-D9FF-4DA6-A9E7-ECD7CCBECE49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{F1F39A52-2BA4-4629-BE60-15F14522BC87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWeldingLog.Models", "MyWeldingLog.Models\MyWeldingLog.Models.csproj", "{7AE5E182-574B-4FDB-987C-B37A78BAD695}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +22,21 @@ Global
 		{40224EBB-BC67-459C-83AD-776BD5437ABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40224EBB-BC67-459C-83AD-776BD5437ABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40224EBB-BC67-459C-83AD-776BD5437ABB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2E405CC-FFC4-4DD0-93A3-9D535532401A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2E405CC-FFC4-4DD0-93A3-9D535532401A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2E405CC-FFC4-4DD0-93A3-9D535532401A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2E405CC-FFC4-4DD0-93A3-9D535532401A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E68C40B9-D9FF-4DA6-A9E7-ECD7CCBECE49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E68C40B9-D9FF-4DA6-A9E7-ECD7CCBECE49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E68C40B9-D9FF-4DA6-A9E7-ECD7CCBECE49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E68C40B9-D9FF-4DA6-A9E7-ECD7CCBECE49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AE5E182-574B-4FDB-987C-B37A78BAD695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AE5E182-574B-4FDB-987C-B37A78BAD695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AE5E182-574B-4FDB-987C-B37A78BAD695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AE5E182-574B-4FDB-987C-B37A78BAD695}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E68C40B9-D9FF-4DA6-A9E7-ECD7CCBECE49} = {3A5602F8-0F00-4AE0-908D-26935BB02F7F}
+		{7AE5E182-574B-4FDB-987C-B37A78BAD695} = {F1F39A52-2BA4-4629-BE60-15F14522BC87}
 	EndGlobalSection
 EndGlobal
