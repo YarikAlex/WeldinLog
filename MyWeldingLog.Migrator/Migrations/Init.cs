@@ -1,4 +1,3 @@
-using System.Runtime.Intrinsics.Arm;
 using FluentMigrator;
 
 namespace MyWeldingLog.Migrator.Migrations
@@ -56,10 +55,10 @@ namespace MyWeldingLog.Migrator.Migrations
                     .WithColumn("Factory").AsString(100)
                     .WithColumn("IsIsolated").AsBoolean().NotNullable();
             }
-
-            if (!Schema.Table("BranchMaterials").Exists())
+            ///TODO: Добавить описание к таблице о том, что в таблице хранятся отводы, внесенные по проекту
+            if (!Schema.Table("ProjectBranchMaterials").Exists())
             {
-                Create.Table("BranchMaterials")
+                Create.Table("ProjectBranchMaterials")
                     .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("BranchMaterials_Id")
                     .WithColumn("BranchId").AsInt32().NotNullable().ForeignKey(primaryTableName:"BranchesCatalog", primaryColumnName:"Id")
                     .WithColumn("ProjectCodeId").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectCodes", primaryColumnName:"Id")
@@ -67,15 +66,19 @@ namespace MyWeldingLog.Migrator.Migrations
                     .WithColumn("IsDeleted").AsBoolean().NotNullable();
             }
             
-            if (!Schema.Table("PipeMaterials").Exists())
+            ///TODO: Добавить описание к таблицео том, что в таблице хранятся трубы, внесенные по проекту
+            if (!Schema.Table("ProjectPipeMaterials").Exists())
             {
-                Create.Table("PipeMaterials")
+                Create.Table("ProjectPipeMaterials")
                     .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("PipeMaterials_Id")
                     .WithColumn("PipeId").AsInt32().NotNullable().ForeignKey(primaryTableName:"PipesCatalog", primaryColumnName:"Id")
                     .WithColumn("ProjectCodeId").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectCodes", primaryColumnName:"Id")
                     .WithColumn("Quantity").AsInt32().NotNullable()
                     .WithColumn("IsDeleted").AsBoolean().NotNullable();
             }
+
+            ///TODO: Добавить таблицы для фактически принятого товара
+            ///TODO: Добавить таблицу для связи объектов и подобъектов
         }
 
         public override void Down()
@@ -83,11 +86,35 @@ namespace MyWeldingLog.Migrator.Migrations
             if (Schema.Table("Objects").Exists())
             {
                 Delete.Table("Objects");
+            }
+
+            if (Schema.Table("SubObjects").Exists())
+            {
                 Delete.Table("SubObjects");
+            }
+
+            if (Schema.Table("ProjectCodes").Exists())
+            {
                 Delete.Table("ProjectCodes");
+            }
+
+            if (Schema.Table("BranchesCatalog").Exists())
+            {
                 Delete.Table("BranchesCatalog");
+            }
+
+            if (Schema.Table("PipesCatalog").Exists())
+            {
                 Delete.Table("PipesCatalog");
+            }
+
+            if (Schema.Table("BranchMaterials").Exists())
+            {
                 Delete.Table("BranchMaterials");
+            }
+
+            if (Schema.Table("PipeMaterials").Exists())
+            {
                 Delete.Table("PipeMaterials");
             }
         }
