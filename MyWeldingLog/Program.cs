@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using MyWeldingLog.DAL;
-using MyWeldingLog.DAL.Interfaces.CatalogMaterials;
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
 using MyWeldingLog.DAL.Interfaces.ProjectMaterials;
-using MyWeldingLog.DAL.Repositories.CatalogMaterials;
 using MyWeldingLog.DAL.Repositories.Hierarchy;
 using MyWeldingLog.DAL.Repositories.ProjectMaterials;
+using MyWeldingLog.Service.Hierarchy;
+using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog
 {
@@ -18,9 +18,6 @@ namespace MyWeldingLog
             builder.Services.AddDbContext<ApplicationDbContext>(o =>
                 o.UseNpgsql(builder.Configuration.GetConnectionString("WeldingLog")));
             builder.Services.AddControllers();
-            //Catalog
-            builder.Services.AddScoped<IBranchRepository, BranchRepository>();
-            builder.Services.AddScoped<IPipeRepository, PipeRepository>();
 
             //Project
             builder.Services.AddScoped<IProjectBranchMaterialRepository, ProjectBranchMaterialRepository>();
@@ -30,6 +27,7 @@ namespace MyWeldingLog
             builder.Services.AddScoped<IObjectRepository, ObjectRepository>();
             builder.Services.AddScoped<ISubObjectRepository, SubObjectRepository>();
             builder.Services.AddScoped<IProjectCodeRepository, ProjectCodeRepository>();
+            builder.Services.AddScoped<IObjectService, ObjectService>();
 
             var app = builder.Build();
             app.MapControllerRoute(

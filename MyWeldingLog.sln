@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{F1F39A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWeldingLog.Models", "MyWeldingLog.Models\MyWeldingLog.Models.csproj", "{7AE5E182-574B-4FDB-987C-B37A78BAD695}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{B001C444-32F3-42A2-9B52-3D099D143287}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWeldingLog.Service", "MyWeldingLog.Service\MyWeldingLog.Service.csproj", "{64326E6D-EF39-40B4-B6CE-6BC00B83EAB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,9 +38,14 @@ Global
 		{7AE5E182-574B-4FDB-987C-B37A78BAD695}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AE5E182-574B-4FDB-987C-B37A78BAD695}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AE5E182-574B-4FDB-987C-B37A78BAD695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64326E6D-EF39-40B4-B6CE-6BC00B83EAB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64326E6D-EF39-40B4-B6CE-6BC00B83EAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64326E6D-EF39-40B4-B6CE-6BC00B83EAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64326E6D-EF39-40B4-B6CE-6BC00B83EAB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E68C40B9-D9FF-4DA6-A9E7-ECD7CCBECE49} = {3A5602F8-0F00-4AE0-908D-26935BB02F7F}
 		{7AE5E182-574B-4FDB-987C-B37A78BAD695} = {F1F39A52-2BA4-4629-BE60-15F14522BC87}
+		{64326E6D-EF39-40B4-B6CE-6BC00B83EAB8} = {B001C444-32F3-42A2-9B52-3D099D143287}
 	EndGlobalSection
 EndGlobal

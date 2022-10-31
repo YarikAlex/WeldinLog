@@ -19,6 +19,7 @@
     <ItemGroup>
       <ProjectReference Include="..\MyWeldingLog.DAL\MyWeldingLog.DAL.csproj" />
       <ProjectReference Include="..\MyWeldingLog.Migrator\MyWeldingLog.Migrator.csproj" />
+      <ProjectReference Include="..\MyWeldingLog.Service\MyWeldingLog.Service.csproj" />
     </ItemGroup>
 
 </Project>
