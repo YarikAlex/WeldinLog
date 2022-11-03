@@ -4,6 +4,6 @@ namespace MyWeldingLog.DAL.Interfaces.Hierarchy
 {
     public interface IObjectRepository : IBaseRepository<Object>
     {
-        
+        Task<Object?> Get(int id);
     }
 }
