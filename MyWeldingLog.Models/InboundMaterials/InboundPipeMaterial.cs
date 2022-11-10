@@ -4,7 +4,9 @@ namespace MyWeldingLog.Models.ActualMaterials
     {
         public int Id { get; set; }
         
-        public int ProjectCodeId { get; set; }
+        public int? ProjectCodeId { get; set; }
+
+        public int ObjectId { get; set; }
         
         public int? ProjectPipeId { get; set; }
         

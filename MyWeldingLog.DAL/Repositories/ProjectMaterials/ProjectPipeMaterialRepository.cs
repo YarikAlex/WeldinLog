@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MyWeldingLog.DAL.Interfaces.ProjectMaterials;
 using MyWeldingLog.Models.ProjectMaterials;
 
@@ -5,24 +6,37 @@ namespace MyWeldingLog.DAL.Repositories.ProjectMaterials
 {
     public class ProjectPipeMaterialRepository : IProjectPipeMaterialRepository
     {
-        public Task Insert(ProjectPipeMaterial entity)
+        private readonly ApplicationDbContext _db;
+
+        public ProjectPipeMaterialRepository(ApplicationDbContext db)
         {
-            throw new NotImplementedException();
+            _db = db;
         }
 
-        public Task<ProjectPipeMaterial[]> Select()
+        public async Task<bool> Insert(ProjectPipeMaterial entity)
         {
-            throw new NotImplementedException();
+            await _db.ProjectPipeMaterials.AddAsync(entity);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> Delete(ProjectPipeMaterial entity)
+        public async Task<ProjectPipeMaterial[]> Select()
         {
-            throw new NotImplementedException();
+           return await _db.ProjectPipeMaterials.ToArrayAsync();
         }
 
-        public Task Update(ProjectPipeMaterial entity)
+        public async Task<bool> Delete(ProjectPipeMaterial entity)
         {
-            throw new NotImplementedException();
+            _db.ProjectPipeMaterials.Update(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<ProjectPipeMaterial?> Get(int id)
+        {
+            var pipes = await _db.ProjectPipeMaterials.ToArrayAsync();
+            var pipe = pipes.FirstOrDefault(p => p.Id == id);
+            return pipe;
         }
     }
 }

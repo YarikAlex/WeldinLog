@@ -12,9 +12,11 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
         {
             _db = db;
         }
-        public async Task Insert(SubObject entity)
+        public async Task<bool> Insert(SubObject entity)
         {
             await _db.SubObjects.AddAsync(entity);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
         public async Task<SubObject[]> Select()
@@ -29,9 +31,11 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             return true;
         }
 
-        public Task Update(SubObject entity)
+        public async Task<SubObject?> Get(int id)
         {
-            throw new NotImplementedException();
+            var subObjects = await _db.SubObjects.ToArrayAsync();
+            var result = subObjects.FirstOrDefault(s => s.Id == id);
+            return result;
         }
     }
 }

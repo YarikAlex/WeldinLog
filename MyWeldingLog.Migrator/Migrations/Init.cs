@@ -30,6 +30,7 @@ namespace MyWeldingLog.Migrator.Migrations
                     .WithColumn("ObjectId").AsInt32().NotNullable().ForeignKey("Objects", "Id");
             }
 
+            ///TODO: Добавить для труб и отводов тип изоляции
             if (!Schema.Table("ProjectBranchMaterials").Exists())
             {
                 Create.Table("ProjectBranchMaterials").WithDescription("В данной таблице хранятся отводы внесенные по проекту")
@@ -39,7 +40,7 @@ namespace MyWeldingLog.Migrator.Migrations
                     .WithColumn("Wall").AsInt16().NotNullable()
                     .WithColumn("Angle").AsByte().NotNullable()
                     .WithColumn("BranchType").AsString(10).NotNullable()
-                    .WithColumn("Steel").AsString(100).NotNullable()
+                    .WithColumn("Strength").AsString(100).NotNullable()
                     .WithColumn("TechnicalConditions").AsString(100).NotNullable()
                     .WithColumn("Factory").AsString(100)
                     .WithColumn("IsIsolated").AsBoolean().NotNullable()
@@ -62,33 +63,13 @@ namespace MyWeldingLog.Migrator.Migrations
                     .WithColumn("IsDeleted").AsBoolean().NotNullable();
             }
 
-            if (!Schema.Table("ActualPipeMaterials").Exists())
+            if (!Schema.Table("InboundPipeMaterials").Exists())
             {
-                Create.Table("ActualPipeMaterials")
-                    .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("ActualPipeMaterials_Id")
+                Create.Table("InboundPipeMaterials")
+                    .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("InboundPipeMaterials_Id")
                     .WithColumn("Date").AsDate().NotNullable()
                     .WithColumn("Diameter").AsInt16().NotNullable()
                     .WithColumn("Wall").AsInt16().NotNullable()
-                    .WithColumn("Steel").AsString(100).NotNullable()
-                    .WithColumn("TechnicalConditions").AsString(100).NotNullable()
-                    .WithColumn("Factory").AsString(100)
-                    .WithColumn("IsIsolated").AsBoolean().NotNullable()
-                    .WithColumn("Quantity").AsInt32().NotNullable()
-                    .WithColumn("Certificate").AsString().NotNullable()
-                    .WithColumn("FactoryNumber").AsString().NotNullable()
-                    .WithColumn("ProjectCodeId").AsInt32().NotNullable().ForeignKey(primaryTableName: "ProjectCodes", primaryColumnName: "Id")
-                    .WithColumn("ProjectPipeId").AsInt32().ForeignKey(primaryTableName: "ProjectPipeMaterials", primaryColumnName: "Id");
-            }
-
-            if (!Schema.Table("ActualBranchMaterials").Exists())
-            {
-                Create.Table("ActualBranchMaterials")
-                    .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("ActualBranchMaterials_Id")
-                    .WithColumn("Date").AsDate().NotNullable()
-                    .WithColumn("Diameter").AsInt16().NotNullable()
-                    .WithColumn("Wall").AsInt16().NotNullable()
-                    .WithColumn("Angle").AsByte().NotNullable()
-                    .WithColumn("BranchType").AsString(10).NotNullable()
                     .WithColumn("Steel").AsString(100).NotNullable()
                     .WithColumn("TechnicalConditions").AsString(100).NotNullable()
                     .WithColumn("Factory").AsString(100)
@@ -97,7 +78,29 @@ namespace MyWeldingLog.Migrator.Migrations
                     .WithColumn("Certificate").AsString().NotNullable()
                     .WithColumn("FactoryNumber").AsString().NotNullable()
                     .WithColumn("ProjectCodeId").AsInt32().ForeignKey(primaryTableName: "ProjectCodes", primaryColumnName: "Id")
-                    .WithColumn("ProjectBranchId").AsInt32().ForeignKey(primaryTableName: "ProjectBranchMaterials", primaryColumnName: "Id");
+                    .WithColumn("ProjectPipeId").AsInt32().ForeignKey(primaryTableName: "ProjectPipeMaterials", primaryColumnName: "Id")
+                    .WithColumn("ObjectId").AsInt32().ForeignKey(primaryTableName: "Objects", primaryColumnName: "Id");
+            }
+
+            if (!Schema.Table("InboundBranchMaterials").Exists())
+            {
+                Create.Table("InboundBranchMaterials")
+                    .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("InboundBranchMaterials_Id")
+                    .WithColumn("Date").AsDate().NotNullable()
+                    .WithColumn("Diameter").AsInt16().NotNullable()
+                    .WithColumn("Wall").AsInt16().NotNullable()
+                    .WithColumn("Angle").AsByte().NotNullable()
+                    .WithColumn("BranchType").AsString(10).NotNullable()
+                    .WithColumn("Strength").AsString(100).NotNullable()
+                    .WithColumn("TechnicalConditions").AsString(100).NotNullable()
+                    .WithColumn("Factory").AsString(100)
+                    .WithColumn("IsIsolated").AsBoolean().NotNullable()
+                    .WithColumn("Quantity").AsInt32().NotNullable()
+                    .WithColumn("Certificate").AsString().NotNullable()
+                    .WithColumn("FactoryNumber").AsString().NotNullable()
+                    .WithColumn("ProjectCodeId").AsInt32().ForeignKey(primaryTableName: "ProjectCodes", primaryColumnName: "Id")
+                    .WithColumn("ProjectBranchId").AsInt32().ForeignKey(primaryTableName: "ProjectBranchMaterials", primaryColumnName: "Id")
+                    .WithColumn("ObjectId").AsInt32().ForeignKey(primaryTableName: "Objects", primaryColumnName: "Id");
             }
 
             if (!Schema.Table("Hierarchy").Exists())
@@ -140,12 +143,12 @@ namespace MyWeldingLog.Migrator.Migrations
                 Delete.Table("Hierarchy");
             }
 
-            if (Schema.Table("ActualPipeMaterials").Exists())
+            if (Schema.Table("InboundPipeMaterials").Exists())
             {
                 Delete.Table("ActualPipeMaterials");
             }
 
-            if (Schema.Table("ActualBranchMaterials").Exists())
+            if (Schema.Table("InboundBranchMaterials").Exists())
             {
                 Delete.Table("ActualBranchMaterials");
             }

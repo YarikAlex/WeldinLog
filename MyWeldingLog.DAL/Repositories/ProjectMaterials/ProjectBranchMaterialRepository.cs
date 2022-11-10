@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MyWeldingLog.DAL.Interfaces.ProjectMaterials;
 using MyWeldingLog.Models.ProjectMaterials;
 
@@ -5,24 +6,37 @@ namespace MyWeldingLog.DAL.Repositories.ProjectMaterials
 {
     public class ProjectBranchMaterialRepository : IProjectBranchMaterialRepository
     {
-        public Task Insert(ProjectBranchMaterial entity)
+        private readonly ApplicationDbContext _db;
+
+        public ProjectBranchMaterialRepository(ApplicationDbContext db)
         {
-            throw new NotImplementedException();
+            _db = db;
         }
 
-        public Task<ProjectBranchMaterial[]> Select()
+        public async Task<bool> Insert(ProjectBranchMaterial entity)
         {
-            throw new NotImplementedException();
+            await _db.ProjectBranchMaterials.AddAsync(entity);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> Delete(ProjectBranchMaterial entity)
+        public async Task<ProjectBranchMaterial[]> Select()
         {
-            throw new NotImplementedException();
+            return await _db.ProjectBranchMaterials.ToArrayAsync();
         }
 
-        public Task Update(ProjectBranchMaterial entity)
+        public async Task<bool> Delete(ProjectBranchMaterial entity)
         {
-            throw new NotImplementedException();
+            _db.ProjectBranchMaterials.Update(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<ProjectBranchMaterial?> Get(int id)
+        {
+            var branches = await _db.ProjectBranchMaterials.ToArrayAsync();
+            var branch = branches.FirstOrDefault(p => p.Id == id);
+            return branch;
         }
     }
 }

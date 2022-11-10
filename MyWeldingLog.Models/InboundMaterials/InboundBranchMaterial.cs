@@ -4,7 +4,9 @@ namespace MyWeldingLog.Models.ActualMaterials
     {
         public int Id { get; set; }
         
-        public int ProjectCodeId { get; set; }
+        public int? ProjectCodeId { get; set; }
+
+        public int  ObjectId { get; set; }
         
         public int? ProjectBranchId { get; set; }
         
@@ -18,7 +20,7 @@ namespace MyWeldingLog.Models.ActualMaterials
         
         public string BranchType { get; set; }
         
-        public string Steel { get; set; }
+        public string Strength { get; set; }
         
         public string TechnicalCondition { get; set; }
         
