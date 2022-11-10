@@ -1,6 +1,6 @@
 namespace MyWeldingLog.Models.ActualMaterials
 {
-    public class ActualPipeMaterial
+    public class InboundPipeMaterial
     {
         public int Id { get; set; }
         

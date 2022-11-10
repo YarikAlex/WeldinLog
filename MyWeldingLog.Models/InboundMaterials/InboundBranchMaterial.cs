@@ -1,6 +1,6 @@
-namespace MyWeldingLog.Models.ActualMaterials
+namespace MyWeldingLog.Models.InboundMaterials
 {
-    public class ActualBranchMaterial
+    public class InboundBranchMaterial
     {
         public int Id { get; set; }
         
