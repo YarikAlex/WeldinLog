@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using MyWeldingLog.DAL;
-using MyWeldingLog.DAL.Interfaces.ActualMaterials;
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
+using MyWeldingLog.DAL.Interfaces.InboundMaterials;
 using MyWeldingLog.DAL.Interfaces.ProjectMaterials;
-using MyWeldingLog.DAL.Repositories.ActualMaterials;
 using MyWeldingLog.DAL.Repositories.Hierarchy;
+using MyWeldingLog.DAL.Repositories.InboundMaterials;
 using MyWeldingLog.DAL.Repositories.ProjectMaterials;
 using MyWeldingLog.Service.Implementations.Hierarchy;
 using MyWeldingLog.Service.Implementations.ProjectMaterials;
@@ -33,11 +33,14 @@ namespace MyWeldingLog
             builder.Services.AddScoped<IObjectRepository, ObjectRepository>();
             builder.Services.AddScoped<ISubObjectRepository, SubObjectRepository>();
             builder.Services.AddScoped<IProjectCodeRepository, ProjectCodeRepository>();
+            builder.Services.AddScoped<IHierarchyRepository, HierarchyRepository>();
             builder.Services.AddScoped<IObjectService, ObjectService>();
+            builder.Services.AddScoped<ISubObjectService, SubObjectService>();
+            builder.Services.AddScoped<IHierarchyService, HierarchyService>();
 
             //Actual Materials
-            builder.Services.AddScoped<IActualPipeMaterialRepository, ActualPipeMaterialRepository>();
-            builder.Services.AddScoped<IActualBranchMaterialRepository, ActualBranchMaterialRepository>();
+            builder.Services.AddScoped<IInboundPipeMaterialRepository, InboundPipeMaterialRepository>();
+            builder.Services.AddScoped<IInboundBranchMaterialRepository, InboundBranchMaterialRepository>();
 
             var app = builder.Build();
             app.MapControllerRoute(
