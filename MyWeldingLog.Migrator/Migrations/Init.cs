@@ -75,6 +75,16 @@ namespace MyWeldingLog.Migrator.Migrations
                     .WithColumn("Used").AsDouble().NotNullable()
                     .WithColumn("IsDeleted").AsBoolean().NotNullable();
             }
+
+            if (!Schema.Table("Jobs").Exists())
+            {
+                Create.Table("Jobs")
+                    .WithColumn("Cluster_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"Cluster", primaryColumnName:"Id")
+                    .WithColumn("ProjectCodes_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectCodes", primaryColumnName:"Id")
+                    .WithColumn("JobTypes_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"JobTypes", primaryColumnName:"Id")
+                    .WithColumn("ProjectMaterials_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectMaterials", primaryColumnName:"Id")
+                    .WithColumn("Quantity").AsDouble().NotNullable();
+            }
         }
 
         public override void Down()
@@ -112,6 +122,11 @@ namespace MyWeldingLog.Migrator.Migrations
             if (Schema.Table("ProjectMaterials").Exists())
             {
                 Delete.Table("ProjectMaterials");
+            }
+
+            if (Schema.Table("Jobs").Exists())
+            {
+                Delete.Table("Jobs");
             }
         }
     }
