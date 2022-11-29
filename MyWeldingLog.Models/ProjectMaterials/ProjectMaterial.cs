@@ -1,6 +1,8 @@
+using MyWeldingLog.Models.Enums;
+
 namespace MyWeldingLog.Models.ProjectMaterials
 {
-    public class ProjectPipeMaterial
+    public class ProjectMaterial
     {
         /// <summary>
         /// Идентификатор отвода по таблице ProjectPipeMaterials.
@@ -13,14 +15,44 @@ namespace MyWeldingLog.Models.ProjectMaterials
         public int ProjectCodeId { get; set; }
 
         /// <summary>
+        /// Тип материала
+        /// </summary>
+        public MaterialTypes MaterialType { get; set; }
+
+        /// <summary>
         /// Диаметр трубы.
         /// </summary>
-        public ushort Diameter { get; set; }
+        public ushort FirstDiameter { get; set; }
 
         /// <summary>
         /// Толщина стенки.
         /// </summary>
-        public byte Wall { get; set; }
+        public byte FirstWall { get; set; }
+
+        /// <summary>
+        /// Второй диаметр (для тройников и переходов)
+        /// </summary>
+        public ushort? SecondDiameter { get; set; }
+
+        /// <summary>
+        /// Толщина стенки второго диаметра (для тройников и переходов)
+        /// </summary>
+        public byte? SecondWall { get; set; }
+
+        /// <summary>
+        /// Угол поворота.
+        /// </summary>
+        public byte? Angle { get; set; }
+
+        /// <summary>
+        /// Тип отвода.
+        /// </summary>
+        public string BranchType { get; set; }
+
+        /// <summary>
+        /// Класс прочности.
+        /// </summary>
+        public string Strength { get; set; }
 
         /// <summary>
         /// Марка стали.
@@ -43,9 +75,19 @@ namespace MyWeldingLog.Models.ProjectMaterials
         public bool IsIsolated { get; set; }
 
         /// <summary>
+        /// Тип изоляции
+        /// </summary>
+        public string IsolationType { get; set; }
+
+        /// <summary>
         /// Количество материала по проекту
         /// </summary>
         public double Quantity { get; set; }
+
+        /// <summary>
+        /// Количество материалв использванного в работах
+        /// </summary>
+        public double Used { get; set; }
 
         /// <summary>
         /// Метка об удалении материала

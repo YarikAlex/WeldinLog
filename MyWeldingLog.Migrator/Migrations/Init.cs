@@ -79,10 +79,10 @@ namespace MyWeldingLog.Migrator.Migrations
             if (!Schema.Table("Jobs").Exists())
             {
                 Create.Table("Jobs")
-                    .WithColumn("Cluster_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"Cluster", primaryColumnName:"Id")
-                    .WithColumn("ProjectCodes_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectCodes", primaryColumnName:"Id")
-                    .WithColumn("JobTypes_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"JobTypes", primaryColumnName:"Id")
-                    .WithColumn("ProjectMaterials_Id").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectMaterials", primaryColumnName:"Id")
+                    .WithColumn("ClusterId").AsInt32().NotNullable().ForeignKey(primaryTableName:"Cluster", primaryColumnName:"Id")
+                    .WithColumn("ProjectCodeId").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectCodes", primaryColumnName:"Id")
+                    .WithColumn("JobTypeId").AsInt32().NotNullable().ForeignKey(primaryTableName:"JobTypes", primaryColumnName:"Id")
+                    .WithColumn("ProjectMaterialId").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectMaterials", primaryColumnName:"Id")
                     .WithColumn("Quantity").AsDouble().NotNullable();
             }
         }
