@@ -44,5 +44,11 @@ namespace MyWeldingLog.DAL.Repositories.ProjectMaterials
             await _db.SaveChangesAsync();
             return true;
         }
+
+        public async Task<ProjectMaterial?> GetById(int id)
+        {
+            var materials = await _db.ProjectMaterials.ToArrayAsync();
+            return materials.FirstOrDefault(material => material.Id == id);
+        }
     }
 }

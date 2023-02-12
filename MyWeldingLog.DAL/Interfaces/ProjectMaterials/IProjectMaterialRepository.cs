@@ -7,5 +7,7 @@ namespace MyWeldingLog.DAL.Interfaces.ProjectMaterials
         Task<bool> InsertProjectMaterials(ProjectMaterial[] entities);
 
         Task<bool> DeleteProjectMaterials(ProjectMaterial[] entities);
+
+        Task<ProjectMaterial?> GetById(int id);
     }
 }

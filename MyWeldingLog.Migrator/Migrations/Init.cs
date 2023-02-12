@@ -24,8 +24,9 @@ namespace MyWeldingLog.Migrator.Migrations
             if (!Schema.Table("Hierarchy").Exists())
             {
                 Create.Table("Hierarchy")
-                    .WithColumn("ObjectId").AsInt32().PrimaryKey("HierarchyIds")
-                    .WithColumn("SubObjectId").AsInt32().PrimaryKey("HierarchyIds");
+                    .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("Hierarchy_Id")
+                    .WithColumn("ObjectId").AsInt32().NotNullable()
+                    .WithColumn("SubObjectId").AsInt32().NotNullable();
             }
 
             if (!Schema.Table("ProjectCodes").Exists())
@@ -79,6 +80,7 @@ namespace MyWeldingLog.Migrator.Migrations
             if (!Schema.Table("Jobs").Exists())
             {
                 Create.Table("Jobs")
+                    .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("Jobs_Id")
                     .WithColumn("ClusterId").AsInt32().NotNullable().ForeignKey(primaryTableName:"Cluster", primaryColumnName:"Id")
                     .WithColumn("ProjectCodeId").AsInt32().NotNullable().ForeignKey(primaryTableName:"ProjectCodes", primaryColumnName:"Id")
                     .WithColumn("JobTypeId").AsInt32().NotNullable().ForeignKey(primaryTableName:"JobTypes", primaryColumnName:"Id")

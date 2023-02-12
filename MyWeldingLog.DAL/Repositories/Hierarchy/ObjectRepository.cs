@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
 using Object = MyWeldingLog.Models.Hierarchy.Object;
 
@@ -37,6 +38,13 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             var objects = await _db.Objects.ToArrayAsync();
             var result = objects.FirstOrDefault(o => o.Id == id);
             return result;
+        }
+
+        public async Task<EntityEntry<Object>> Update(Object obj)
+        {
+           var result = _db.Objects.Update(obj);
+           await _db.SaveChangesAsync();
+           return result;
         }
     }
 }
