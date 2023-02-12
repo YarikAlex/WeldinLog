@@ -2,6 +2,7 @@ namespace MyWeldingLog.Models.Hierarchy
 {
     public class Job
     {
+        public int Id { get; set; }
         /// <summary>
         /// Идентификатор участка на котором производится работа
         /// </summary>

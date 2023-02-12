@@ -7,6 +7,7 @@ namespace MyWeldingLog.Models.Enums
         
         //Hierarchy
         LinkAlreadyExist,
+        LinkNotFound,
         
         //Objects
         ObjectNotFound,
