@@ -31,20 +31,20 @@ namespace MyWeldingLog.Controllers
 
             return new JsonResult(response.Data, _jsonOptions);
         }
-        
-        [HttpGet("get-object-by-name")]
-        public async Task<IActionResult> GetObjectByName(string name)
-        {
-            var response = await _objectService.GetObjectByName(name);
-            
-            return new JsonResult(response.Data, _jsonOptions);
-        }
 
         [HttpPost("delete-object")]
         public async Task<IActionResult> DeleteObject(int id)
         {
             var response = await _objectService.DeleteObject(id);
             
+            return new JsonResult(response.Data, _jsonOptions);
+        }
+
+        [HttpPost("rename-object")]
+        public async Task<IActionResult> RenameObject(int id, string newName)
+        {
+            var response = await _objectService.RenameObject(id, newName);
+
             return new JsonResult(response.Data, _jsonOptions);
         }
 
