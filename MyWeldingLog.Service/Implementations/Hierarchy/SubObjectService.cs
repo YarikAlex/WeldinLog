@@ -103,5 +103,10 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 };
             }
         }
+
+        public Task<IBaseResponse<bool>> RenameSubObject(int id, string newName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

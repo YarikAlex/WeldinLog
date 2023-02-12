@@ -46,32 +46,6 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<Object>> GetObjectByName(string name)
-        {
-            var response = new BaseResponse<Object>();
-            try
-            {
-                var objects = await _objectRepository.Select();
-                objects = objects.Where(x => x.Name == name).ToArray();
-                if (objects.Length == 0)
-                {
-                    response.Description = "Object not found";
-                    response.StatusCode = StatusCode.ObjectNotFound;
-                    return response;
-                }
-                response.Data = objects.First();
-                return response;
-            }
-            catch (Exception ex)
-            {
-                return new BaseResponse<Object>()
-                {
-                    Description = $"[GetObjectByName] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
-                };
-            }
-        }
-
         public async Task<IBaseResponse<Object[]>> GetObjects()
         {
             var response = new BaseResponse<Object[]>();
@@ -123,6 +97,35 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>()
                 {
                     Description = $"[DeleteObject] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
+        public async Task<IBaseResponse<bool>> RenameObject(int id, string newName)
+        {
+            var response = new BaseResponse<bool>();
+            try
+            {
+                var obj = await _objectRepository.Get(id);
+                if (obj == null)
+                {
+                    response.Description = "Object not found";
+                    response.StatusCode = StatusCode.ObjectNotFound;
+                    return response;
+                }
+
+                obj.Name = newName;
+                var result = await _objectRepository.Update(obj);
+                
+                response.Data = result.Entity.Name == newName;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<bool>()
+                {
+                    Description = $"[RenameObject] : {ex.Message}",
                     StatusCode = StatusCode.InternalServerError
                 };
             }

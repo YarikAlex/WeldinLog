@@ -21,12 +21,12 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             try
             {
                 var lines = await _hierarchyRepository.Select();
-                lines = lines.Where(line => 
-                    line.ObjectId == objectId && 
-                    line.SubObjectId == subObjectId)
+                var subObjectIds = lines
+                    .Where(line => line.ObjectId == objectId)
+                    .Select(x => x.SubObjectId)
                     .ToArray();
 
-                if (lines.Length != 0)
+                if (!subObjectIds.Contains(subObjectId))
                 {
                     response.Description = "Link already exists";
                     response.StatusCode = StatusCode.LinkAlreadyExist;
@@ -46,6 +46,36 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>()
                 {
                     Description = $"[AddNewSubObjectInObject] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
+        public async Task<IBaseResponse<bool>> DeleteSubObjectFromObject(int objectId, int subObjectId)
+        {
+            var response = new BaseResponse<bool>();
+            try
+            {
+                var lines = await _hierarchyRepository.Select();
+
+                var line = lines.FirstOrDefault(x => 
+                    x.ObjectId == objectId &&
+                    x.SubObjectId == subObjectId);
+
+                if (line == null)
+                {
+                    response.Description = "Link not found";
+                    response.StatusCode = StatusCode.LinkNotFound;
+                    return response;
+                }
+                response.Data = await _hierarchyRepository.Delete(line);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<bool>()
+                {
+                    Description = $"[DeleteSubObjectFromObject] : {ex.Message}",
                     StatusCode = StatusCode.InternalServerError
                 };
             }

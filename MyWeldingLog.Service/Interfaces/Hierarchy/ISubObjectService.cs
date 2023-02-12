@@ -9,5 +9,6 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
         Task<IBaseResponse<SubObject>> GetSubObjectByName(string name);
         Task<IBaseResponse<SubObject[]>> GetSubObjects();
         Task<IBaseResponse<bool>> DeleteSubObject(int id);
+        Task<IBaseResponse<bool>> RenameSubObject(int id, string newName);
     }
 }

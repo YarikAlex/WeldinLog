@@ -10,4 +10,8 @@
       <ProjectReference Include="..\MyWeldingLog.DAL\MyWeldingLog.DAL.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Implementations\ProjectMaterials" />
+    </ItemGroup>
+
 </Project>
