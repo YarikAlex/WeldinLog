@@ -5,7 +5,8 @@ using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog.Controllers
 {
-    [Route("hierarchy")]
+    [Route("[controller]")]
+    [ApiController]
     public class HierarchyController : Controller
     {
         private readonly IObjectService _objectService;

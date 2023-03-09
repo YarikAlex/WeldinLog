@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using MyWeldingLog.DAL;
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
@@ -6,6 +7,9 @@ using MyWeldingLog.DAL.Repositories.Hierarchy;
 using MyWeldingLog.DAL.Repositories.ProjectMaterials;
 using MyWeldingLog.Service.Implementations.Hierarchy;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
+using FluentValidation.AspNetCore;
+using MyWeldingLog.Models.Requests.Objects;
+using MyWeldingLog.Validators.Objects;
 
 namespace MyWeldingLog
 {
@@ -19,7 +23,13 @@ namespace MyWeldingLog
 
             builder.Services.AddDbContext<ApplicationDbContext>(o =>
                 o.UseNpgsql(builder.Configuration.GetConnectionString("WeldingLog")));
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddFluentValidation(
+                    x =>
+                    {
+                        x.ImplicitlyValidateChildProperties = true;
+                        x.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+                    });
 
             //Project Materials
             builder.Services.AddScoped<IProjectMaterialRepository, ProjectMaterialRepository>();
@@ -39,7 +49,12 @@ namespace MyWeldingLog
 
             var app = builder.Build();
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(
+                options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+                });
             app.UseHttpsRedirection();
             app.MapControllers();
 
