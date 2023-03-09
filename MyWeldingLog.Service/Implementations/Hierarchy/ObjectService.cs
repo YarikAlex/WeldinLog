@@ -52,18 +52,18 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             var response = new BaseResponse<Object[]>();
             try
             {
-                var objects = (await _objectRepository.Select())
-                    .OrderBy(o => o.Name)
-                    .ToArray();
+                var objects = await _objectRepository.Select();
                 
-                if (objects.Length == 0)
+                if (!objects.Any())
                 {
                     response.Description = "Objects not found";
                     response.StatusCode = StatusCode.ObjectsNotFound;
                     return response;
                 }
 
-                response.Data = objects;
+                response.Data = objects
+                    .OrderBy(o => o.Name)
+                    .ToArray();
                 return response;
             }
             catch (Exception ex)

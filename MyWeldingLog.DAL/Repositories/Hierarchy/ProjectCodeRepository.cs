@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
 using MyWeldingLog.Models.Hierarchy;
+using Object = MyWeldingLog.Models.Hierarchy.Object;
 
 namespace MyWeldingLog.DAL.Repositories.Hierarchy
 {
@@ -36,6 +38,13 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
         {
             var projectCodes = await _db.ProjectCodes.ToArrayAsync();
             var result = projectCodes.FirstOrDefault(o => o.Id == id);
+            return result;
+        }
+
+        public async Task<EntityEntry<ProjectCode>> Update(ProjectCode entity)
+        {
+            var result = _db.ProjectCodes.Update(entity);
+            await _db.SaveChangesAsync();
             return result;
         }
     }

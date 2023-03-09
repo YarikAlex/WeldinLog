@@ -34,8 +34,7 @@ namespace MyWeldingLog.Migrator.Migrations
                 Create.Table("ProjectCodes")
                     .WithColumn("Id").AsInt32().NotNullable().Identity().PrimaryKey("ProjectCode_Id")
                     .WithColumn("Name").AsString(100).NotNullable().Unique()
-                    .WithColumn("SubObjectId").AsInt32().NotNullable().ForeignKey("SubObjects", "Id")
-                    .WithColumn("ObjectId").AsInt32().NotNullable().ForeignKey("Objects", "Id");
+                    .WithColumn("HierarchyId").AsInt32().NotNullable();
             }
 
             if (!Schema.Table("Cluster").Exists())

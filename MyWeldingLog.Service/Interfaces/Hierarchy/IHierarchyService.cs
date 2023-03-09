@@ -1,4 +1,3 @@
-using MyWeldingLog.DAL.Interfaces;
 using MyWeldingLog.Models.Responses.Interfaces;
 
 namespace MyWeldingLog.Service.Interfaces.Hierarchy

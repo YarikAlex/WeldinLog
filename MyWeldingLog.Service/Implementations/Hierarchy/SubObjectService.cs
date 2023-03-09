@@ -53,7 +53,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             {
                 var subObjects = await _subObjectRepository.Select();
                 subObjects = subObjects.Where(x => x.Name == name).ToArray();
-                if (subObjects.Length == 0)
+                if (!subObjects.Any())
                 {
                     response.Description = "SubObject not found";
                     response.StatusCode = StatusCode.SubObjectNotFound;

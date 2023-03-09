@@ -18,10 +18,9 @@ namespace MyWeldingLog.Models.Enums
         SubObjectAlreadyExist,
         SubObjectNotFound,
         
-        //Pipes
-        PipeNotFound,
-        
-        //Branches
-        BranchNotFound
+        //ProjectCodes
+        ProjectCodeAlreadyExist,
+        ProjectCodeNotFound,
+        ProjectCodesNotFound
     }
 }
