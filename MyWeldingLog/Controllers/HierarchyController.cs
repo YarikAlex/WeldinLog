@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using MyWeldingLog.Models.Requests.Objects;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog.Controllers
@@ -17,9 +18,9 @@ namespace MyWeldingLog.Controllers
         }
 
         [HttpPost("add-object")]
-        public async Task<IActionResult> AddNewObject(string name)
+        public async Task<IActionResult> CreateNewObject(CreateNewObjectRequest request)
         {
-            var response = await _objectService.CreateNewObject(name);
+            var response = await _objectService.CreateNewObject(request);
             
             return new JsonResult(response.Data, _jsonOptions);
         }
@@ -33,17 +34,17 @@ namespace MyWeldingLog.Controllers
         }
 
         [HttpPost("delete-object")]
-        public async Task<IActionResult> DeleteObject(int id)
+        public async Task<IActionResult> DeleteObject(DeleteObjectRequest request)
         {
-            var response = await _objectService.DeleteObject(id);
+            var response = await _objectService.DeleteObject(request);
             
             return new JsonResult(response.Data, _jsonOptions);
         }
 
         [HttpPost("rename-object")]
-        public async Task<IActionResult> RenameObject(int id, string newName)
+        public async Task<IActionResult> RenameObject(RenameObjectRequest request)
         {
-            var response = await _objectService.RenameObject(id, newName);
+            var response = await _objectService.RenameObject(request);
 
             return new JsonResult(response.Data, _jsonOptions);
         }

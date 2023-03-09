@@ -1,5 +1,6 @@
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
 using MyWeldingLog.Models.Enums;
+using MyWeldingLog.Models.Requests.Objects;
 using MyWeldingLog.Models.Responses;
 using MyWeldingLog.Models.Responses.Interfaces;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
@@ -16,7 +17,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             _objectRepository = objectRepository;
         }
 
-        public async Task<IBaseResponse<bool>> CreateNewObject(string name)
+        public async Task<IBaseResponse<bool>> CreateNewObject(CreateNewObjectRequest request)
         {
             var response = new BaseResponse<bool>();
             try
@@ -25,13 +26,13 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     .Select(o => o.Name)
                     .ToArray();
 
-                if (objects.Contains(name))
+                if (objects.Contains(request.ObjectName))
                 {
                     response.Description = "Object already exist";
                     response.StatusCode = StatusCode.ObjectAlreadyExist;
                     return response;
                 }
-                var newObject = new Object { Name = name };
+                var newObject = new Object { Name = request.ObjectName };
                 response.Data = await _objectRepository.Insert(newObject);
                 
                 return response;
@@ -75,12 +76,12 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<bool>> DeleteObject(int id)
+        public async Task<IBaseResponse<bool>> DeleteObject(DeleteObjectRequest request)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var deletingObject = await _objectRepository.Get(id);
+                var deletingObject = await _objectRepository.Get(request.ObjectId);
                 
                 if (deletingObject == null)
                 {
@@ -102,12 +103,12 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<bool>> RenameObject(int id, string newName)
+        public async Task<IBaseResponse<bool>> RenameObject(RenameObjectRequest request)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var obj = await _objectRepository.Get(id);
+                var obj = await _objectRepository.Get(request.ObjectId);
                 if (obj == null)
                 {
                     response.Description = "Object not found";
@@ -115,10 +116,10 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return response;
                 }
 
-                obj.Name = newName;
+                obj.Name = request.NewObjectName;
                 var result = await _objectRepository.Update(obj);
                 
-                response.Data = result.Entity.Name == newName;
+                response.Data = result.Entity.Name == request.NewObjectName;
                 return response;
             }
             catch (Exception ex)
