@@ -14,19 +14,19 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
 
         public async Task<bool> Insert(Models.Hierarchy.Hierarchy entity)
         {
-            await _db.Hierarchies.AddAsync(entity);
+            await _db.Hierarchy.AddAsync(entity);
             await _db.SaveChangesAsync();
             return true;
         }
 
         public async Task<Models.Hierarchy.Hierarchy[]> Select()
         {
-            return await _db.Hierarchies.ToArrayAsync();
+            return await _db.Hierarchy.ToArrayAsync();
         }
 
         public async Task<bool> Delete(Models.Hierarchy.Hierarchy entity)
         {
-            _db.Hierarchies.Remove(entity);
+            _db.Hierarchy.Remove(entity);
             await _db.SaveChangesAsync();
             return true;
         }

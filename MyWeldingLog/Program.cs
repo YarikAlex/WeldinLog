@@ -46,6 +46,7 @@ namespace MyWeldingLog
             builder.Services.AddScoped<IObjectService, ObjectService>();
             builder.Services.AddScoped<ISubObjectService, SubObjectService>();
             builder.Services.AddScoped<IHierarchyService, HierarchyService>();
+            builder.Services.AddScoped<IProjectCodeService, ProjectCodeService>();
 
             var app = builder.Build();
             app.UseSwagger();
