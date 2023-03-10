@@ -18,11 +18,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             _hierarchyRepository = hierarchyRepository;
         }
 
-        public async Task<IBaseResponse<bool>> CreateNewProjectCode(int hierarchyId, string projectCodeName)
+        public async Task<IBaseResponse<bool>> CreateNewProjectCode(
+            int hierarchyId,
+            string projectCodeName,
+            CancellationToken token)
         {
             try
             {
-                var hierarchy = (await _hierarchyRepository.Select())
+                var hierarchy = (await _hierarchyRepository.Select(token))
                     .FirstOrDefault(x => x.Id == hierarchyId);
 
                 if (hierarchy == null)
@@ -34,7 +37,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     };
                 }
 
-                var projectCodes = (await _projectCodeRepository.Select())
+                var projectCodes = (await _projectCodeRepository.Select(token))
                     .Select(x => x.Name)
                     .ToArray();
 
@@ -54,7 +57,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                         {
                             HierarchyId = hierarchyId,
                             Name = projectCodeName
-                        }),
+                        }, token),
                     StatusCode = StatusCode.Ok
                 };
             }
@@ -68,22 +71,31 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<bool>> DeleteProjectCode(int projectCodeId)
+        public async Task<IBaseResponse<bool>> DeleteProjectCode(
+            int projectCodeId,
+            CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var projectCode = await _projectCodeRepository.Get(projectCodeId);
+                var projectCode = await _projectCodeRepository.Get(projectCodeId, token);
                 
                 if (projectCode == null)
                 {
-                    response.Description = "Project code not found";
-                    response.StatusCode = StatusCode.ProjectCodeNotFound;
-                    return response;
+                    return new BaseResponse<bool>
+                    {
+                        Description = "Project code not found",
+                        StatusCode = StatusCode.ProjectCodeNotFound
+                    };
                 }
 
-                response.Data = await _projectCodeRepository.Delete(projectCode);
-                return response;
+                var result = await _projectCodeRepository.Delete(projectCode, token);
+                
+                return new BaseResponse<bool>
+                {
+                    Data = result,
+                    StatusCode = StatusCode.Ok
+                };
             }
             catch (Exception ex)
             {
@@ -95,11 +107,11 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<IEnumerable<ProjectCode>>> GetProjectCodes()
+        public async Task<IBaseResponse<IEnumerable<ProjectCode>>> GetProjectCodes(CancellationToken token)
         {
             try
             {
-                var projectCodes = await _projectCodeRepository.Select();
+                var projectCodes = await _projectCodeRepository.Select(token);
                 if (!projectCodes.Any())
                 {
                     return new BaseResponse<IEnumerable<ProjectCode>>
@@ -125,11 +137,13 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<ProjectCode>> GetProjectCodeByName(string name)
+        public async Task<IBaseResponse<ProjectCode>> GetProjectCodeByName(
+            string name,
+            CancellationToken token)
         {
             try
             {
-                var projectCodes = await _projectCodeRepository.Select();
+                var projectCodes = await _projectCodeRepository.Select(token);
                 var projectCode = projectCodes.FirstOrDefault(x => x.Name == name);
 
                 if (projectCode == null)
@@ -157,11 +171,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<bool>> RenameProjectCode(int id, string newName)
+        public async Task<IBaseResponse<bool>> RenameProjectCode(
+            int id,
+            string newName,
+            CancellationToken token)
         {
             try
             {
-                var projectCode = await _projectCodeRepository.Get(id);
+                var projectCode = await _projectCodeRepository.Get(id, token);
                 if (projectCode == null)
                 {
                     return new BaseResponse<bool>
@@ -173,7 +190,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
 
                 projectCode.Name = newName;
 
-                var response = await _projectCodeRepository.Update(projectCode);
+                var response = await _projectCodeRepository.Update(projectCode, token);
 
                 return new BaseResponse<bool>
                 {

@@ -6,12 +6,12 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
 {
     public interface IObjectService
     {
-        Task<IBaseResponse<bool>> CreateNewObject(CreateNewObjectRequest request);
+        Task<IBaseResponse<bool>> CreateNewObject(CreateNewObjectRequest request, CancellationToken token);
         
-        Task<IBaseResponse<Object[]>> GetObjects();
+        Task<IBaseResponse<Object[]>> GetObjects(CancellationToken token);
         
-        Task<IBaseResponse<bool>> DeleteObject(DeleteObjectRequest request);
+        Task<IBaseResponse<bool>> DeleteObject(DeleteObjectRequest request, CancellationToken token);
         
-        Task<IBaseResponse<bool>> RenameObject(RenameObjectRequest request);
+        Task<IBaseResponse<bool>> RenameObject(RenameObjectRequest request, CancellationToken token);
     }
 }

@@ -5,14 +5,22 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
 {
     public interface IProjectCodeService
     {
-        Task<IBaseResponse<bool>> CreateNewProjectCode(int hierarchyId, string projectCodeName);
+        Task<IBaseResponse<bool>> CreateNewProjectCode(
+            int hierarchyId,
+            string projectCodeName,
+            CancellationToken token);
 
-        Task<IBaseResponse<bool>> DeleteProjectCode(int projectCodeId);
+        Task<IBaseResponse<bool>> DeleteProjectCode(int projectCodeId, CancellationToken token);
         
-        Task<IBaseResponse<IEnumerable<ProjectCode>>> GetProjectCodes();
+        Task<IBaseResponse<IEnumerable<ProjectCode>>> GetProjectCodes(CancellationToken token);
         
-        Task<IBaseResponse<ProjectCode>> GetProjectCodeByName(string name);
+        Task<IBaseResponse<ProjectCode>> GetProjectCodeByName(
+            string name,
+            CancellationToken token);
         
-        Task<IBaseResponse<bool>> RenameProjectCode(int id, string newName);
+        Task<IBaseResponse<bool>> RenameProjectCode(
+            int id,
+            string newName,
+            CancellationToken token);
     }
 }

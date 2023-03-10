@@ -25,33 +25,39 @@ namespace MyWeldingLog.Controllers
 
         #region Objects
         [HttpPost("objects/add-object")]
-        public async Task<IActionResult> CreateNewObject(CreateNewObjectRequest request)
+        public async Task<IActionResult> CreateNewObject(
+            CreateNewObjectRequest request,
+            CancellationToken token)
         {
-            var response = await _objectService.CreateNewObject(request);
+            var response = await _objectService.CreateNewObject(request, token);
             
             return new JsonResult(response, _jsonOptions);
         }
 
         [HttpGet("objects/get-objects")]
-        public async Task<IActionResult> GetObjects()
+        public async Task<IActionResult> GetObjects(CancellationToken token)
         {
-            var response = await _objectService.GetObjects();
+            var response = await _objectService.GetObjects(token);
 
             return new JsonResult(response, _jsonOptions);
         }
 
         [HttpPost("objects/delete-object")]
-        public async Task<IActionResult> DeleteObject(DeleteObjectRequest request)
+        public async Task<IActionResult> DeleteObject(
+            DeleteObjectRequest request,
+            CancellationToken token)
         {
-            var response = await _objectService.DeleteObject(request);
+            var response = await _objectService.DeleteObject(request, token);
             
             return new JsonResult(response, _jsonOptions);
         }
 
         [HttpPost("objects/rename-object")]
-        public async Task<IActionResult> RenameObject(RenameObjectRequest request)
+        public async Task<IActionResult> RenameObject(
+            RenameObjectRequest request,
+            CancellationToken token)
         {
-            var response = await _objectService.RenameObject(request);
+            var response = await _objectService.RenameObject(request, token);
 
             return new JsonResult(response, _jsonOptions);
         }
@@ -60,49 +66,58 @@ namespace MyWeldingLog.Controllers
         #region ProjectCodes
         [HttpPost("project-codes/create-new-project-code")]
         public async Task<IActionResult> CreateNewProjectCode(
-            CreateNewProjectCodeRequest request)
+            CreateNewProjectCodeRequest request,
+            CancellationToken token)
         {
             var response = await _projectCodeService.CreateNewProjectCode(
                 hierarchyId: request.HierarchyId,
-                projectCodeName: request.ProjectCodeName);
+                projectCodeName: request.ProjectCodeName,
+                token: token);
 
             return new JsonResult(response, _jsonOptions);
         }
 
         [HttpPost("project-codes/delete-project-code")]
         public async Task<IActionResult> DeleteProjectCode(
-            DeleteProjectCodeRequest request)
+            DeleteProjectCodeRequest request,
+            CancellationToken token)
         {
-            var response = await _projectCodeService.DeleteProjectCode(request.ProjectCodeId);
+            var response = await _projectCodeService.DeleteProjectCode(
+                request.ProjectCodeId,
+                token);
 
             return new JsonResult(response, _jsonOptions);
         }
 
         [HttpPost("project-codes/get-project-codes")]
-        public async Task<IActionResult> GetProjectCodes()
+        public async Task<IActionResult> GetProjectCodes(CancellationToken token)
         {
-            var response = await _projectCodeService.GetProjectCodes();
+            var response = await _projectCodeService.GetProjectCodes(token);
             
             return new JsonResult(response, _jsonOptions);
         }
         
         [HttpPost("project-codes/get-project-code-by-name")]
         public async Task<IActionResult> GetProjectCodesByName(
-            GetProjectCodeByNameRequest request)
+            GetProjectCodeByNameRequest request,
+            CancellationToken token)
         {
             var response = await _projectCodeService.GetProjectCodeByName(
-                request.ProjectCodeName);
+                request.ProjectCodeName,
+                token);
             
             return new JsonResult(response, _jsonOptions);
         }
 
         [HttpPost("project-codes/rename-project-code")]
         public async Task<IActionResult> RenameProjectCode(
-            RenameProjectCodeRequest request)
+            RenameProjectCodeRequest request,
+            CancellationToken token)
         {
             var response = await _projectCodeService.RenameProjectCode(
                 request.ProjectCodeId,
-                request.NewProjectCodeName);
+                request.NewProjectCodeName,
+                token);
             
             return new JsonResult(response, _jsonOptions);
         }

@@ -4,10 +4,10 @@ namespace MyWeldingLog.DAL.Interfaces.ProjectMaterials
 {
     public interface IProjectMaterialRepository : IBaseRepository<ProjectMaterial>
     {
-        Task<bool> InsertProjectMaterials(ProjectMaterial[] entities);
+        Task<bool> InsertProjectMaterials(ProjectMaterial[] entities, CancellationToken token);
 
-        Task<bool> DeleteProjectMaterials(ProjectMaterial[] entities);
+        Task<bool> DeleteProjectMaterials(ProjectMaterial[] entities, CancellationToken token);
 
-        Task<ProjectMaterial?> GetById(int id);
+        Task<ProjectMaterial?> GetById(int id, CancellationToken token);
     }
 }

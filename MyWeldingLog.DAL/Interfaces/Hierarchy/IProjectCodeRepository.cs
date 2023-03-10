@@ -5,8 +5,8 @@ namespace MyWeldingLog.DAL.Interfaces.Hierarchy
 {
     public interface IProjectCodeRepository : IBaseRepository<ProjectCode>
     {
-        Task<ProjectCode?> Get(int id);
+        Task<ProjectCode?> Get(int id, CancellationToken token);
         
-        Task<EntityEntry<ProjectCode>> Update(ProjectCode projectCode);
+        Task<EntityEntry<ProjectCode>> Update(ProjectCode projectCode, CancellationToken token);
     }
 }

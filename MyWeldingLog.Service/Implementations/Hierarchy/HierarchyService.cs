@@ -15,12 +15,15 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             _hierarchyRepository = hierarchyRepository;
         }
 
-        public async Task<IBaseResponse<bool>> AddNewSubObjectInObject(int objectId, int subObjectId)
+        public async Task<IBaseResponse<bool>> AddNewSubObjectInObject(
+            int objectId,
+            int subObjectId,
+            CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var lines = await _hierarchyRepository.Select();
+                var lines = await _hierarchyRepository.Select(token);
                 var subObjectIds = lines
                     .Where(line => line.ObjectId == objectId)
                     .Select(x => x.SubObjectId)
@@ -38,7 +41,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     ObjectId = objectId,
                     SubObjectId = subObjectId
                 };
-                response.Data = await _hierarchyRepository.Insert(newLine);
+                response.Data = await _hierarchyRepository.Insert(newLine, token);
                 return response;
             }
             catch (Exception ex)
@@ -51,12 +54,15 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<bool>> DeleteSubObjectFromObject(int objectId, int subObjectId)
+        public async Task<IBaseResponse<bool>> DeleteSubObjectFromObject(
+            int objectId,
+            int subObjectId,
+            CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var lines = await _hierarchyRepository.Select();
+                var lines = await _hierarchyRepository.Select(token);
 
                 var line = lines.FirstOrDefault(x => 
                     x.ObjectId == objectId &&
@@ -68,7 +74,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     response.StatusCode = StatusCode.LinkNotFound;
                     return response;
                 }
-                response.Data = await _hierarchyRepository.Delete(line);
+                response.Data = await _hierarchyRepository.Delete(line, token);
                 return response;
             }
             catch (Exception ex)

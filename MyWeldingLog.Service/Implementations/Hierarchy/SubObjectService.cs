@@ -16,25 +16,32 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             _subObjectRepository = subObjectRepository;
         }
 
-        public async Task<IBaseResponse<bool>> CreateNewSubObject(string name)
+        public async Task<IBaseResponse<bool>> CreateNewSubObject(
+            string name,
+            CancellationToken token)
         {
-            var response = new BaseResponse<bool>();
             try
             {
-                var objects = (await _subObjectRepository.Select())
+                var objects = (await _subObjectRepository.Select(token))
                     .Select(s => s.Name)
                     .ToArray();
 
                 if (objects.Contains(name))
                 {
-                    response.Description = "SubObject already exist";
-                    response.StatusCode = StatusCode.SubObjectAlreadyExist;
-                    return response;
+                    return new BaseResponse<bool>
+                    {
+                        Description = "SubObject already exist",
+                        StatusCode = StatusCode.SubObjectAlreadyExist
+                    };
                 }
                 var newSubObject = new SubObject { Name = name };
-                response.Data = await _subObjectRepository.Insert(newSubObject);
-                
-                return response;
+                var result = await _subObjectRepository.Insert(newSubObject, token);
+
+                return new BaseResponse<bool>
+                {
+                    Data = result,
+                    StatusCode = StatusCode.Ok
+                };
             }
             catch (Exception ex)
             {
@@ -46,21 +53,29 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<SubObject>> GetSubObjectByName(string name)
+        public async Task<IBaseResponse<SubObject>> GetSubObjectByName(
+            string name,
+            CancellationToken token)
         {
-            var response = new BaseResponse<SubObject>();
             try
             {
-                var subObjects = await _subObjectRepository.Select();
-                subObjects = subObjects.Where(x => x.Name == name).ToArray();
-                if (!subObjects.Any())
+                var subObjects = await _subObjectRepository.Select(token);
+                var subObject = subObjects.FirstOrDefault(x => x.Name == name);
+                
+                if (subObject == null)
                 {
-                    response.Description = "SubObject not found";
-                    response.StatusCode = StatusCode.SubObjectNotFound;
-                    return response;
+                    return new BaseResponse<SubObject>
+                    {
+                        Description = "SubObject not found",
+                        StatusCode = StatusCode.SubObjectNotFound
+                    };
                 }
-                response.Data = subObjects.First();
-                return response;
+
+                return new BaseResponse<SubObject>
+                {
+                    Data = subObject,
+                    StatusCode = StatusCode.Ok
+                };
             }
             catch (Exception ex)
             {
@@ -72,27 +87,61 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public Task<IBaseResponse<SubObject[]>> GetSubObjects()
+        public async Task<IBaseResponse<IEnumerable<SubObject>>> GetSubObjects(
+            CancellationToken token)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IBaseResponse<bool>> DeleteSubObject(int id)
-        {
-            var response = new BaseResponse<bool>();
             try
             {
-                var deletingObject = await _subObjectRepository.Get(id);
+                var subObjects = await _subObjectRepository.Select(token);
+                
+                if (!subObjects.Any())
+                {
+                    return new BaseResponse<IEnumerable<SubObject>>
+                    {
+                        Description = "Sub object not found",
+                        StatusCode = StatusCode.SubObjectNotFound
+                    };
+                }
+                
+                return new BaseResponse<IEnumerable<SubObject>>
+                {
+                    Data = subObjects.OrderBy(x => x.Name).ToArray(),
+                    StatusCode = StatusCode.Ok
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<SubObject>>
+                {
+                    Description = $"[GetSubObjects] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
+        public async Task<IBaseResponse<bool>> DeleteSubObject(
+            int id,
+            CancellationToken token)
+        {
+            try
+            {
+                var deletingObject = await _subObjectRepository.Get(id, token);
                 
                 if (deletingObject == null)
                 {
-                    response.Description = "SubObject not found";
-                    response.StatusCode = StatusCode.SubObjectNotFound;
-                    return response;
+                    return new BaseResponse<bool>
+                    {
+                        Description = "SubObject not found",
+                        StatusCode = StatusCode.SubObjectNotFound
+                    };
                 }
                 
-                response.Data = await _subObjectRepository.Delete(deletingObject);
-                return response;
+                var result = await _subObjectRepository.Delete(deletingObject, token);
+                return new BaseResponse<bool>
+                {
+                    Data = result,
+                    StatusCode = StatusCode.Ok
+                };
             }
             catch (Exception ex)
             {
@@ -104,9 +153,41 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public Task<IBaseResponse<bool>> RenameSubObject(int id, string newName)
+        public async Task<IBaseResponse<bool>> RenameSubObject(
+            int id,
+            string newName,
+            CancellationToken token)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var subObject = await _subObjectRepository.Get(id, token);
+                if (subObject == null)
+                {
+                    return new BaseResponse<bool>
+                    {
+                        Description = "Project code not found",
+                        StatusCode = StatusCode.ProjectCodeNotFound
+                    };
+                }
+
+                subObject.Name = newName;
+
+                var response = await _subObjectRepository.Update(subObject, token);
+
+                return new BaseResponse<bool>
+                {
+                    Data = response.Entity.Name == newName,
+                    StatusCode = StatusCode.Ok
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<bool>
+                {
+                    Description = $"[RenameProjectCode] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
         }
     }
 }

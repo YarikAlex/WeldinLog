@@ -12,22 +12,22 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
         {
             _db = db;
         }
-        public async Task<bool> Insert(Job entity)
+        public async Task<bool> Insert(Job entity, CancellationToken token)
         {
-            await _db.Jobs.AddAsync(entity);
-            await _db.SaveChangesAsync();
+            await _db.Jobs.AddAsync(entity, token);
+            await _db.SaveChangesAsync(token);
             return true;
         }
 
-        public async Task<Job[]> Select()
+        public async Task<Job[]> Select(CancellationToken token)
         {
-            return await _db.Jobs.ToArrayAsync();
+            return await _db.Jobs.ToArrayAsync(cancellationToken: token);
         }
 
-        public async Task<bool> Delete(Job entity)
+        public async Task<bool> Delete(Job entity, CancellationToken token)
         {
             _db.Jobs.Remove(entity);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(token);
             return true;
         }
     }

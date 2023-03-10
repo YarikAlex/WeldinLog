@@ -4,8 +4,14 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
 {
     public interface IHierarchyService
     {
-        Task<IBaseResponse<bool>> AddNewSubObjectInObject(int objectId, int subObjectId);
+        Task<IBaseResponse<bool>> AddNewSubObjectInObject(
+            int objectId,
+            int subObjectId,
+            CancellationToken token);
 
-        Task<IBaseResponse<bool>> DeleteSubObjectFromObject(int objectId, int subObjectId);
+        Task<IBaseResponse<bool>> DeleteSubObjectFromObject(
+            int objectId,
+            int subObjectId,
+            CancellationToken token);
     }
 }

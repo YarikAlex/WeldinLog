@@ -17,12 +17,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             _objectRepository = objectRepository;
         }
 
-        public async Task<IBaseResponse<bool>> CreateNewObject(CreateNewObjectRequest request)
+        public async Task<IBaseResponse<bool>> CreateNewObject(
+            CreateNewObjectRequest request,
+            CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var objects = (await _objectRepository.Select())
+                var objects = (await _objectRepository.Select(token))
                     .Select(o => o.Name)
                     .ToArray();
 
@@ -33,7 +35,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return response;
                 }
                 var newObject = new Object { Name = request.ObjectName };
-                response.Data = await _objectRepository.Insert(newObject);
+                response.Data = await _objectRepository.Insert(newObject, token);
                 
                 return response;
             }
@@ -47,12 +49,12 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<Object[]>> GetObjects()
+        public async Task<IBaseResponse<Object[]>> GetObjects(CancellationToken token)
         {
             var response = new BaseResponse<Object[]>();
             try
             {
-                var objects = await _objectRepository.Select();
+                var objects = await _objectRepository.Select(token);
                 
                 if (!objects.Any())
                 {
@@ -76,12 +78,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<bool>> DeleteObject(DeleteObjectRequest request)
+        public async Task<IBaseResponse<bool>> DeleteObject(
+            DeleteObjectRequest request,
+            CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var deletingObject = await _objectRepository.Get(request.ObjectId);
+                var deletingObject = await _objectRepository.Get(request.ObjectId, token);
                 
                 if (deletingObject == null)
                 {
@@ -90,7 +94,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return response;
                 }
                 
-                response.Data = await _objectRepository.Delete(deletingObject);
+                response.Data = await _objectRepository.Delete(deletingObject, token);
                 return response;
             }
             catch (Exception ex)
@@ -103,12 +107,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
-        public async Task<IBaseResponse<bool>> RenameObject(RenameObjectRequest request)
+        public async Task<IBaseResponse<bool>> RenameObject(
+            RenameObjectRequest request,
+            CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var obj = await _objectRepository.Get(request.ObjectId);
+                var obj = await _objectRepository.Get(request.ObjectId, token);
                 if (obj == null)
                 {
                     response.Description = "Object not found";
@@ -117,7 +123,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 }
 
                 obj.Name = request.NewObjectName;
-                var result = await _objectRepository.Update(obj);
+                var result = await _objectRepository.Update(obj, token);
                 
                 response.Data = result.Entity.Name == request.NewObjectName;
                 return response;

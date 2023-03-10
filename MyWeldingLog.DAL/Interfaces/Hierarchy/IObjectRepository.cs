@@ -5,7 +5,7 @@ namespace MyWeldingLog.DAL.Interfaces.Hierarchy
 {
     public interface IObjectRepository : IBaseRepository<Object>
     {
-        Task<Object?> Get(int id);
-        Task<EntityEntry<Object>> Update(Object obj);
+        Task<Object?> Get(int id, CancellationToken token);
+        Task<EntityEntry<Object>> Update(Object obj, CancellationToken token);
     }
 }

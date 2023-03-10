@@ -12,42 +12,42 @@ namespace MyWeldingLog.DAL.Repositories.ProjectMaterials
         {
             _db = db;
         }
-        public async Task<bool> Insert(ProjectMaterial entity)
+        public async Task<bool> Insert(ProjectMaterial entity, CancellationToken token)
         {
-            await _db.ProjectMaterials.AddAsync(entity);
-            await _db.SaveChangesAsync();
+            await _db.ProjectMaterials.AddAsync(entity, token);
+            await _db.SaveChangesAsync(token);
             return true;
         }
 
-        public async Task<ProjectMaterial[]> Select()
+        public async Task<ProjectMaterial[]> Select(CancellationToken token)
         {
-            return await _db.ProjectMaterials.ToArrayAsync();
+            return await _db.ProjectMaterials.ToArrayAsync(cancellationToken: token);
         }
 
-        public async Task<bool> Delete(ProjectMaterial entity)
+        public async Task<bool> Delete(ProjectMaterial entity, CancellationToken token)
         {
             _db.ProjectMaterials.Update(entity);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(token);
             return true;
         }
 
-        public async Task<bool> InsertProjectMaterials(ProjectMaterial[] entities)
+        public async Task<bool> InsertProjectMaterials(ProjectMaterial[] entities, CancellationToken token)
         {
             await _db.ProjectMaterials.AddRangeAsync(entities);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(token);
             return true;
         }
 
-        public async Task<bool> DeleteProjectMaterials(ProjectMaterial[] entities)
+        public async Task<bool> DeleteProjectMaterials(ProjectMaterial[] entities, CancellationToken token)
         {
             _db.ProjectMaterials.UpdateRange(entities);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(token);
             return true;
         }
 
-        public async Task<ProjectMaterial?> GetById(int id)
+        public async Task<ProjectMaterial?> GetById(int id, CancellationToken token)
         {
-            var materials = await _db.ProjectMaterials.ToArrayAsync();
+            var materials = await _db.ProjectMaterials.ToArrayAsync(token);
             return materials.FirstOrDefault(material => material.Id == id);
         }
     }
