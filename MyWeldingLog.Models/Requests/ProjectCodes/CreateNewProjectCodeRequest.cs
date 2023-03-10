@@ -2,7 +2,9 @@ namespace MyWeldingLog.Models.Requests.ProjectCodes
 {
     public class CreateNewProjectCodeRequest
     {
-        public int HierarchyId { get; set; }
+        public int ObjectId { get; set; }
+
+        public int SubObjectId { get; set; }
 
         public string ProjectCodeName { get; set; }
     }

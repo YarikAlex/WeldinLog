@@ -7,9 +7,13 @@ namespace MyWeldingLog.Validators.ProjectCodes
     {
         public CreateNewProjectCodeRequestValidator()
         {
-            RuleFor(x => x.HierarchyId)
+            RuleFor(x => x.ObjectId)
                 .GreaterThan(0)
-                .WithMessage("HierarchyId should be greater than 0.");
+                .WithMessage("ObjectId should be greater than 0.");
+            
+            RuleFor(x => x.SubObjectId)
+                .GreaterThan(0)
+                .WithMessage("SubObjectId should be greater than 0.");
 
             RuleFor(x => x.ProjectCodeName)
                 .NotEmpty()

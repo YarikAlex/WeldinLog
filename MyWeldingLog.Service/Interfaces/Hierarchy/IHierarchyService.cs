@@ -13,5 +13,10 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
             int objectId,
             int subObjectId,
             CancellationToken token);
+
+        Task<IBaseResponse<int>> GetHierarchyId(
+            int objectId,
+            int subObjectId,
+            CancellationToken token);
     }
 }

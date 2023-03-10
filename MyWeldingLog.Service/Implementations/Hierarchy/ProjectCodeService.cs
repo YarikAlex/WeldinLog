@@ -19,14 +19,17 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
         }
 
         public async Task<IBaseResponse<bool>> CreateNewProjectCode(
-            int hierarchyId,
+            int objectId,
+            int subObjectId,
             string projectCodeName,
             CancellationToken token)
         {
             try
             {
                 var hierarchy = (await _hierarchyRepository.Select(token))
-                    .FirstOrDefault(x => x.Id == hierarchyId);
+                    .FirstOrDefault(x => 
+                        x.ObjectId == objectId &&
+                        x.SubObjectId == subObjectId);
 
                 if (hierarchy == null)
                 {
@@ -55,7 +58,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     Data = await _projectCodeRepository.Insert(
                         new ProjectCode
                         {
-                            HierarchyId = hierarchyId,
+                            HierarchyId = hierarchy.Id,
                             Name = projectCodeName
                         }, token),
                     StatusCode = StatusCode.Ok

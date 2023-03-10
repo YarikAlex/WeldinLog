@@ -86,5 +86,42 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 };
             }
         }
+
+        public async Task<IBaseResponse<int>> GetHierarchyId(
+            int objectId,
+            int subObjectId,
+            CancellationToken token)
+        {
+            try
+            {
+                var hierarchies = await _hierarchyRepository.Select(token);
+                var hierarchy = hierarchies.FirstOrDefault(x => 
+                    x.ObjectId == objectId && 
+                    x.SubObjectId == subObjectId);
+
+                if (hierarchy == null)
+                {
+                    return new BaseResponse<int>
+                    {
+                        Description = "Link not found",
+                        StatusCode = StatusCode.LinkNotFound
+                    };
+                }
+
+                return new BaseResponse<int>
+                {
+                    Data = hierarchy.Id,
+                    StatusCode = StatusCode.Ok
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<int>()
+                {
+                    Description = $"[GetHierarchyId] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
     }
 }

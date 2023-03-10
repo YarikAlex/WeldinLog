@@ -6,7 +6,8 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
     public interface IProjectCodeService
     {
         Task<IBaseResponse<bool>> CreateNewProjectCode(
-            int hierarchyId,
+            int objectId,
+            int subObjectId,
             string projectCodeName,
             CancellationToken token);
 

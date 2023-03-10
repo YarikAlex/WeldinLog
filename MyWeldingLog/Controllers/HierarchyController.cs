@@ -63,6 +63,14 @@ namespace MyWeldingLog.Controllers
         }
         #endregion
 
+        #region SubObjects
+        
+        #endregion
+
+        #region Hierarchy
+        
+        #endregion
+
         #region ProjectCodes
         [HttpPost("project-codes/create-new-project-code")]
         public async Task<IActionResult> CreateNewProjectCode(
@@ -70,7 +78,8 @@ namespace MyWeldingLog.Controllers
             CancellationToken token)
         {
             var response = await _projectCodeService.CreateNewProjectCode(
-                hierarchyId: request.HierarchyId,
+                objectId: request.ObjectId,
+                subObjectId: request.SubObjectId,
                 projectCodeName: request.ProjectCodeName,
                 token: token);
 
