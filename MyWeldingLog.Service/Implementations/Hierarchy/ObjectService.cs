@@ -107,6 +107,40 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             }
         }
 
+        public async Task<IBaseResponse<Object>> GetObjectByName(
+            string objectName,
+            CancellationToken token)
+        {
+            try
+            {
+                var objects = await _objectRepository.Select(token);
+                var obj = objects.FirstOrDefault(x => x.Name == objectName);
+
+                if (obj == null)
+                {
+                    return new BaseResponse<Object>
+                    {
+                        Description = "Object not found.",
+                        StatusCode = StatusCode.ObjectNotFound
+                    };
+                }
+
+                return new BaseResponse<Object>
+                {
+                    Data = obj,
+                    StatusCode = StatusCode.Ok
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<Object>()
+                {
+                    Description = $"[GetObjectByName] : {ex.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
         public async Task<IBaseResponse<bool>> RenameObject(
             RenameObjectRequest request,
             CancellationToken token)

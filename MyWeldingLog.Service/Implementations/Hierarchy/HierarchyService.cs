@@ -9,27 +9,46 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
     public class HierarchyService : IHierarchyService
     {
         private readonly IHierarchyRepository _hierarchyRepository;
+        private readonly IObjectService _objectService;
+        private readonly ISubObjectService _subObjectService;
 
-        public HierarchyService(IHierarchyRepository hierarchyRepository)
+        public HierarchyService(
+            IHierarchyRepository hierarchyRepository,
+            IObjectService objectService,
+            ISubObjectService subObjectService)
         {
             _hierarchyRepository = hierarchyRepository;
+            _objectService = objectService;
+            _subObjectService = subObjectService;
         }
 
         public async Task<IBaseResponse<bool>> AddNewSubObjectInObject(
-            int objectId,
-            int subObjectId,
+            string objectName,
+            string subObjectName,
             CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var lines = await _hierarchyRepository.Select(token);
-                var subObjectIds = lines
-                    .Where(line => line.ObjectId == objectId)
-                    .Select(x => x.SubObjectId)
-                    .ToArray();
+                var obj = await _objectService.GetObjectByName(objectName, token);
+                var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
 
-                if (!subObjectIds.Contains(subObjectId))
+                if (obj.Data == null || subObject.Data == null)
+                {
+                    return new BaseResponse<bool>
+                    {
+                        Description = "Object or SubObject not found",
+                        StatusCode = StatusCode.ObjectNotFound
+                    };
+                }
+                
+                var hierarchies = await _hierarchyRepository.Select(token);
+                var hierarchy = hierarchies.FirstOrDefault(
+                    x =>
+                        x.ObjectId == obj.Data.Id &&
+                        x.SubObjectId == subObject.Data.Id);
+
+                if (hierarchy != null)
                 {
                     response.Description = "Link already exists";
                     response.StatusCode = StatusCode.LinkAlreadyExist;
@@ -38,8 +57,8 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 
                 var newLine = new Models.Hierarchy.Hierarchy
                 {
-                    ObjectId = objectId,
-                    SubObjectId = subObjectId
+                    ObjectId = obj.Data.Id,
+                    SubObjectId = subObject.Data.Id
                 };
                 response.Data = await _hierarchyRepository.Insert(newLine, token);
                 return response;
@@ -55,26 +74,37 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
         }
 
         public async Task<IBaseResponse<bool>> DeleteSubObjectFromObject(
-            int objectId,
-            int subObjectId,
+            string objectName,
+            string subObjectName,
             CancellationToken token)
         {
             var response = new BaseResponse<bool>();
             try
             {
-                var lines = await _hierarchyRepository.Select(token);
+                var obj = await _objectService.GetObjectByName(objectName, token);
+                var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
 
-                var line = lines.FirstOrDefault(x => 
-                    x.ObjectId == objectId &&
-                    x.SubObjectId == subObjectId);
+                if (obj.Data == null || subObject.Data == null)
+                {
+                    return new BaseResponse<bool>
+                    {
+                        Description = "Object or SubObject not found",
+                        StatusCode = StatusCode.ObjectNotFound
+                    };
+                }
+                var hierarchies = await _hierarchyRepository.Select(token);
 
-                if (line == null)
+                var hierarchy = hierarchies.FirstOrDefault(x => 
+                    x.ObjectId == obj.Data.Id &&
+                    x.SubObjectId == subObject.Data.Id);
+
+                if (hierarchy == null)
                 {
                     response.Description = "Link not found";
                     response.StatusCode = StatusCode.LinkNotFound;
                     return response;
                 }
-                response.Data = await _hierarchyRepository.Delete(line, token);
+                response.Data = await _hierarchyRepository.Delete(hierarchy, token);
                 return response;
             }
             catch (Exception ex)

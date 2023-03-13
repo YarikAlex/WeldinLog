@@ -1,7 +1,9 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using MyWeldingLog.Models.Requests.Hierarchy;
 using MyWeldingLog.Models.Requests.Objects;
 using MyWeldingLog.Models.Requests.ProjectCodes;
+using MyWeldingLog.Models.Requests.SubObjects;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog.Controllers
@@ -12,14 +14,20 @@ namespace MyWeldingLog.Controllers
     {
         private readonly IObjectService _objectService;
         private readonly IProjectCodeService _projectCodeService;
+        private readonly IHierarchyService _hierarchyService;
+        private readonly ISubObjectService _subObjectService;
         private readonly JsonSerializerOptions _jsonOptions;
 
         public HierarchyController(
             IObjectService objectService,
-            IProjectCodeService projectCodeService)
+            IProjectCodeService projectCodeService,
+            IHierarchyService hierarchyService,
+            ISubObjectService subObjectService)
         {
             _objectService = objectService;
             _projectCodeService = projectCodeService;
+            _hierarchyService = hierarchyService;
+            _subObjectService = subObjectService;
             _jsonOptions = SetJsonOptions();
         }
 
@@ -34,7 +42,7 @@ namespace MyWeldingLog.Controllers
             return new JsonResult(response, _jsonOptions);
         }
 
-        [HttpGet("objects/get-objects")]
+        [HttpPost("objects/get-objects")]
         public async Task<IActionResult> GetObjects(CancellationToken token)
         {
             var response = await _objectService.GetObjects(token);
@@ -64,11 +72,90 @@ namespace MyWeldingLog.Controllers
         #endregion
 
         #region SubObjects
-        
+        [HttpPost("sub-object/create-new-sub-object")]
+        public async Task<IActionResult> CreateNewSubObject(
+            CreateNewSubObjectRequest request,
+            CancellationToken token)
+        {
+            var response = await _subObjectService.CreateNewSubObject(
+                request.SubObjectName,
+                token);
+
+            return new JsonResult(response, _jsonOptions);
+        }
+
+        [HttpPost("sub-object/get-sub-object-by-name")]
+        public async Task<IActionResult> GetSubObjectByName(
+            GetSubObjectByNameRequest request,
+            CancellationToken token)
+        {
+            var response = await _subObjectService.GetSubObjectByName(
+                request.SubObjectName,
+                token);
+
+            return new JsonResult(response, _jsonOptions);
+        }
+
+        [HttpPost("sub-object/get-sub-objects")]
+        public async Task<IActionResult> GetSubObjects(CancellationToken token)
+        {
+            var response = await _subObjectService.GetSubObjects(token);
+
+            return new JsonResult(response, _jsonOptions);
+        }
+
+        [HttpPost("sub-object/delete-sub-object")]
+        public async Task<IActionResult> DeleteSubObject(
+            DeleteSubObjectRequest request,
+            CancellationToken token)
+        {
+            var response = await _subObjectService.DeleteSubObject(
+                request.SubObjectId,
+                token);
+
+            return new JsonResult(response, _jsonOptions);
+        }
+
+        [HttpPost("sub-object/rename-sub-object")]
+        public async Task<IActionResult> RenameSubObject(
+            RenameSubObjectRequest request,
+            CancellationToken token)
+        {
+            var response = await _subObjectService.RenameSubObject(
+                request.SubObjectId,
+                request.NewSubObjectName,
+                token);
+
+            return new JsonResult(response, _jsonOptions);
+        }
         #endregion
 
         #region Hierarchy
-        
+        [HttpPost("hierarchy/connect-sub-object-to-object")]
+        public async Task<IActionResult> ConnectSubObjectToObject(
+            ConnectSubObjectAndObjectRequest request,
+            CancellationToken token)
+        {
+            var response = await _hierarchyService.AddNewSubObjectInObject(
+                request.ObjectName,
+                request.SubObjectName,
+                token);
+
+            return new JsonResult(response, _jsonOptions);
+        }
+
+        [HttpPost("hierarchy/disconnect-sub-object-from-object")]
+        public async Task<IActionResult> DisconnectSubObjectFromObject(
+            DisconnectSubObjectFromObjectRequest request,
+            CancellationToken token)
+        {
+            var response = await _hierarchyService.DeleteSubObjectFromObject(
+                request.ObjectName,
+                request.SubObjectName,
+                token);
+
+            return new JsonResult(response, _jsonOptions);
+        }
         #endregion
 
         #region ProjectCodes

@@ -13,5 +13,9 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
         Task<IBaseResponse<bool>> DeleteObject(DeleteObjectRequest request, CancellationToken token);
         
         Task<IBaseResponse<bool>> RenameObject(RenameObjectRequest request, CancellationToken token);
+
+        Task<IBaseResponse<Object>> GetObjectByName(
+            string objectName,
+            CancellationToken token);
     }
 }
