@@ -23,7 +23,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
         }
 
         public async Task<IBaseResponse<bool>> AddNewSubObjectInObject(
-            string objectName,
+            string? objectName,
             string subObjectName,
             CancellationToken token)
         {
@@ -33,7 +33,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 var obj = await _objectService.GetObjectByName(objectName, token);
                 var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
 
-                if (obj.Data == null || subObject.Data == null)
+                if (obj == null || subObject.Data == null)
                 {
                     return new BaseResponse<bool>
                     {
@@ -45,7 +45,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 var hierarchies = await _hierarchyRepository.Select(token);
                 var hierarchy = hierarchies.FirstOrDefault(
                     x =>
-                        x.ObjectId == obj.Data.Id &&
+                        x.ObjectId == obj.Id &&
                         x.SubObjectId == subObject.Data.Id);
 
                 if (hierarchy != null)
@@ -57,7 +57,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 
                 var newLine = new Models.Hierarchy.Hierarchy
                 {
-                    ObjectId = obj.Data.Id,
+                    ObjectId = obj.Id,
                     SubObjectId = subObject.Data.Id
                 };
                 response.Data = await _hierarchyRepository.Insert(newLine, token);
@@ -74,7 +74,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
         }
 
         public async Task<IBaseResponse<bool>> DeleteSubObjectFromObject(
-            string objectName,
+            string? objectName,
             string subObjectName,
             CancellationToken token)
         {
@@ -84,7 +84,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 var obj = await _objectService.GetObjectByName(objectName, token);
                 var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
 
-                if (obj.Data == null || subObject.Data == null)
+                if (obj == null || subObject.Data == null)
                 {
                     return new BaseResponse<bool>
                     {
@@ -95,7 +95,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 var hierarchies = await _hierarchyRepository.Select(token);
 
                 var hierarchy = hierarchies.FirstOrDefault(x => 
-                    x.ObjectId == obj.Data.Id &&
+                    x.ObjectId == obj.Id &&
                     x.SubObjectId == subObject.Data.Id);
 
                 if (hierarchy == null)

@@ -4,6 +4,7 @@ using MyWeldingLog.Models.Requests.Hierarchy;
 using MyWeldingLog.Models.Requests.Objects;
 using MyWeldingLog.Models.Requests.ProjectCodes;
 using MyWeldingLog.Models.Requests.SubObjects;
+using MyWeldingLog.Service.Exceptions.BaseException.Elements;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog.Controllers
@@ -33,41 +34,44 @@ namespace MyWeldingLog.Controllers
 
         #region Objects
         [HttpPost("objects/add-object")]
-        public async Task<IActionResult> CreateNewObject(
+        public async Task<ActionResult<Result<bool>>> CreateNewObject(
             CreateNewObjectRequest request,
             CancellationToken token)
         {
-            var response = await _objectService.CreateNewObject(request, token);
+            var response = await _objectService.CreateNewObject(request.ObjectName, token);
             
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
         [HttpPost("objects/get-objects")]
-        public async Task<IActionResult> GetObjects(CancellationToken token)
+        public async Task<ActionResult<Result<IEnumerable<Object>>>> GetObjects(CancellationToken token)
         {
             var response = await _objectService.GetObjects(token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
         [HttpPost("objects/delete-object")]
-        public async Task<IActionResult> DeleteObject(
+        public async Task<ActionResult<Result<bool>>> DeleteObject(
             DeleteObjectRequest request,
             CancellationToken token)
         {
-            var response = await _objectService.DeleteObject(request, token);
-            
-            return new JsonResult(response, _jsonOptions);
+            var response = await _objectService.DeleteObject(request.ObjectId, token);
+
+            return Ok(response);
         }
 
         [HttpPost("objects/rename-object")]
-        public async Task<IActionResult> RenameObject(
+        public async Task<ActionResult<Result<bool>>> RenameObject(
             RenameObjectRequest request,
             CancellationToken token)
         {
-            var response = await _objectService.RenameObject(request, token);
+            var response = await _objectService.RenameObject(
+                request.ObjectId,
+                request.NewObjectName,
+                token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
         #endregion
 

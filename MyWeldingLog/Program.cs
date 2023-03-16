@@ -9,6 +9,8 @@ using MyWeldingLog.Service.Implementations.Hierarchy;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
 using FluentValidation.AspNetCore;
 using MyWeldingLog.Models.Requests.Objects;
+using MyWeldingLog.Service.Exceptions.BaseException;
+using MyWeldingLog.Service.Exceptions.ExceptionHandler;
 using MyWeldingLog.Validators.Objects;
 
 namespace MyWeldingLog
@@ -23,7 +25,8 @@ namespace MyWeldingLog
 
             builder.Services.AddDbContext<ApplicationDbContext>(o =>
                 o.UseNpgsql(builder.Configuration.GetConnectionString("WeldingLog")));
-            builder.Services.AddControllers()
+            builder.Services.AddSingleton<ExceptionFilter>();
+            builder.Services.AddControllers(x => x.Filters.Add<ExceptionFilter>())
                 .AddFluentValidation(
                     x =>
                     {

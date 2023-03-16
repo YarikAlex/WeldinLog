@@ -5,12 +5,12 @@ namespace MyWeldingLog.Service.Interfaces.Hierarchy
     public interface IHierarchyService
     {
         Task<IBaseResponse<bool>> AddNewSubObjectInObject(
-            string objectName,
+            string? objectName,
             string subObjectName,
             CancellationToken token);
 
         Task<IBaseResponse<bool>> DeleteSubObjectFromObject(
-            string objectName,
+            string? objectName,
             string subObjectName,
             CancellationToken token);
 
