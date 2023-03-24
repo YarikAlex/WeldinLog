@@ -1,15 +1,16 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using MyWeldingLog.Models.Hierarchy;
 using MyWeldingLog.Models.Requests.Hierarchy;
 using MyWeldingLog.Models.Requests.Objects;
 using MyWeldingLog.Models.Requests.ProjectCodes;
 using MyWeldingLog.Models.Requests.SubObjects;
 using MyWeldingLog.Service.Exceptions.BaseException.Elements;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
+using Object = System.Object;
 
 namespace MyWeldingLog.Controllers
 {
-    [Route("[controller]")]
+    [Route("hierarchy")]
     [ApiController]
     public class HierarchyController : Controller
     {
@@ -17,7 +18,6 @@ namespace MyWeldingLog.Controllers
         private readonly IProjectCodeService _projectCodeService;
         private readonly IHierarchyService _hierarchyService;
         private readonly ISubObjectService _subObjectService;
-        private readonly JsonSerializerOptions _jsonOptions;
 
         public HierarchyController(
             IObjectService objectService,
@@ -29,11 +29,10 @@ namespace MyWeldingLog.Controllers
             _projectCodeService = projectCodeService;
             _hierarchyService = hierarchyService;
             _subObjectService = subObjectService;
-            _jsonOptions = SetJsonOptions();
         }
 
         #region Objects
-        [HttpPost("objects/add-object")]
+        [HttpPost("objects/create")]
         public async Task<ActionResult<Result<bool>>> CreateNewObject(
             CreateNewObjectRequest request,
             CancellationToken token)
@@ -43,7 +42,7 @@ namespace MyWeldingLog.Controllers
             return Ok(response);
         }
 
-        [HttpPost("objects/get-objects")]
+        [HttpPost("objects/get-all")]
         public async Task<ActionResult<Result<IEnumerable<Object>>>> GetObjects(CancellationToken token)
         {
             var response = await _objectService.GetObjects(token);
@@ -51,7 +50,7 @@ namespace MyWeldingLog.Controllers
             return Ok(response);
         }
 
-        [HttpPost("objects/delete-object")]
+        [HttpPost("objects/delete")]
         public async Task<ActionResult<Result<bool>>> DeleteObject(
             DeleteObjectRequest request,
             CancellationToken token)
@@ -61,7 +60,7 @@ namespace MyWeldingLog.Controllers
             return Ok(response);
         }
 
-        [HttpPost("objects/rename-object")]
+        [HttpPost("objects/rename")]
         public async Task<ActionResult<Result<bool>>> RenameObject(
             RenameObjectRequest request,
             CancellationToken token)
@@ -76,8 +75,8 @@ namespace MyWeldingLog.Controllers
         #endregion
 
         #region SubObjects
-        [HttpPost("sub-object/create-new-sub-object")]
-        public async Task<IActionResult> CreateNewSubObject(
+        [HttpPost("sub-objects/create")]
+        public async Task<ActionResult<Result<bool>>> CreateNewSubObject(
             CreateNewSubObjectRequest request,
             CancellationToken token)
         {
@@ -85,11 +84,11 @@ namespace MyWeldingLog.Controllers
                 request.SubObjectName,
                 token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("sub-object/get-sub-object-by-name")]
-        public async Task<IActionResult> GetSubObjectByName(
+        [HttpPost("sub-objects/get-by-name")]
+        public async Task<ActionResult<Result<SubObject>>> GetSubObjectByName(
             GetSubObjectByNameRequest request,
             CancellationToken token)
         {
@@ -97,19 +96,19 @@ namespace MyWeldingLog.Controllers
                 request.SubObjectName,
                 token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("sub-object/get-sub-objects")]
-        public async Task<IActionResult> GetSubObjects(CancellationToken token)
+        [HttpPost("sub-objects/get-all")]
+        public async Task<ActionResult<Result<IEnumerable<SubObject>>>> GetSubObjects(CancellationToken token)
         {
             var response = await _subObjectService.GetSubObjects(token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("sub-object/delete-sub-object")]
-        public async Task<IActionResult> DeleteSubObject(
+        [HttpPost("sub-objects/delete")]
+        public async Task<ActionResult<Result<bool>>> DeleteSubObject(
             DeleteSubObjectRequest request,
             CancellationToken token)
         {
@@ -117,11 +116,11 @@ namespace MyWeldingLog.Controllers
                 request.SubObjectId,
                 token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("sub-object/rename-sub-object")]
-        public async Task<IActionResult> RenameSubObject(
+        [HttpPost("sub-object/rename")]
+        public async Task<ActionResult<Result<bool>>> RenameSubObject(
             RenameSubObjectRequest request,
             CancellationToken token)
         {
@@ -130,13 +129,13 @@ namespace MyWeldingLog.Controllers
                 request.NewSubObjectName,
                 token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
         #endregion
 
         #region Hierarchy
-        [HttpPost("hierarchy/connect-sub-object-to-object")]
-        public async Task<IActionResult> ConnectSubObjectToObject(
+        [HttpPost("hierarchy/connect")]
+        public async Task<ActionResult<Result<bool>>> ConnectSubObjectToObject(
             ConnectSubObjectAndObjectRequest request,
             CancellationToken token)
         {
@@ -145,11 +144,11 @@ namespace MyWeldingLog.Controllers
                 request.SubObjectName,
                 token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("hierarchy/disconnect-sub-object-from-object")]
-        public async Task<IActionResult> DisconnectSubObjectFromObject(
+        [HttpPost("hierarchy/disconnect")]
+        public async Task<ActionResult<Result<bool>>> DisconnectSubObjectFromObject(
             DisconnectSubObjectFromObjectRequest request,
             CancellationToken token)
         {
@@ -158,13 +157,13 @@ namespace MyWeldingLog.Controllers
                 request.SubObjectName,
                 token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
         #endregion
 
         #region ProjectCodes
-        [HttpPost("project-codes/create-new-project-code")]
-        public async Task<IActionResult> CreateNewProjectCode(
+        [HttpPost("project-codes/create")]
+        public async Task<ActionResult<Result<bool>>> CreateNewProjectCode(
             CreateNewProjectCodeRequest request,
             CancellationToken token)
         {
@@ -174,11 +173,11 @@ namespace MyWeldingLog.Controllers
                 projectCodeName: request.ProjectCodeName,
                 token: token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("project-codes/delete-project-code")]
-        public async Task<IActionResult> DeleteProjectCode(
+        [HttpPost("project-codes/delete")]
+        public async Task<ActionResult<Result<bool>>> DeleteProjectCode(
             DeleteProjectCodeRequest request,
             CancellationToken token)
         {
@@ -186,19 +185,19 @@ namespace MyWeldingLog.Controllers
                 request.ProjectCodeId,
                 token);
 
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("project-codes/get-project-codes")]
-        public async Task<IActionResult> GetProjectCodes(CancellationToken token)
+        [HttpPost("project-codes/get-all")]
+        public async Task<ActionResult<Result<IEnumerable<ProjectCode>>>> GetProjectCodes(CancellationToken token)
         {
             var response = await _projectCodeService.GetProjectCodes(token);
             
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
         
-        [HttpPost("project-codes/get-project-code-by-name")]
-        public async Task<IActionResult> GetProjectCodesByName(
+        [HttpPost("project-codes/get-by-name")]
+        public async Task<ActionResult<Result<ProjectCode>>> GetProjectCodesByName(
             GetProjectCodeByNameRequest request,
             CancellationToken token)
         {
@@ -206,11 +205,11 @@ namespace MyWeldingLog.Controllers
                 request.ProjectCodeName,
                 token);
             
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
 
-        [HttpPost("project-codes/rename-project-code")]
-        public async Task<IActionResult> RenameProjectCode(
+        [HttpPost("project-codes/rename")]
+        public async Task<ActionResult<Result<bool>>> RenameProjectCode(
             RenameProjectCodeRequest request,
             CancellationToken token)
         {
@@ -219,18 +218,8 @@ namespace MyWeldingLog.Controllers
                 request.NewProjectCodeName,
                 token);
             
-            return new JsonResult(response, _jsonOptions);
+            return Ok(response);
         }
         #endregion
-
-        ///TODO: Перенести метод в отдельный файл настроек
-        private JsonSerializerOptions SetJsonOptions()
-        {
-            return new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                WriteIndented = true
-            };
-        }
     }
 }

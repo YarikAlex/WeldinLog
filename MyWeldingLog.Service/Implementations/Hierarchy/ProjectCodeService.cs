@@ -3,6 +3,7 @@ using MyWeldingLog.Models.Enums;
 using MyWeldingLog.Models.Hierarchy;
 using MyWeldingLog.Models.Responses;
 using MyWeldingLog.Models.Responses.Interfaces;
+using MyWeldingLog.Service.Exceptions;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog.Service.Implementations.Hierarchy
@@ -10,206 +11,96 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
     public class ProjectCodeService : IProjectCodeService
     {
         private readonly IProjectCodeRepository _projectCodeRepository;
-        private readonly IHierarchyRepository _hierarchyRepository;
+        private readonly IHierarchyService _hierarchyService;
 
-        public ProjectCodeService(IProjectCodeRepository projectCodeRepository, IHierarchyRepository hierarchyRepository)
+        public ProjectCodeService(
+            IProjectCodeRepository projectCodeRepository,
+            IHierarchyService hierarchyService)
         {
             _projectCodeRepository = projectCodeRepository;
-            _hierarchyRepository = hierarchyRepository;
+            _hierarchyService = hierarchyService;
         }
 
-        public async Task<IBaseResponse<bool>> CreateNewProjectCode(
+        public async Task<bool> CreateNewProjectCode(
             int objectId,
             int subObjectId,
             string projectCodeName,
             CancellationToken token)
         {
-            try
+            var hierarchyId = await _hierarchyService.GetHierarchyId(objectId, subObjectId, token);
+
+           var projectCodes = (await _projectCodeRepository.Select(token))
+                .Select(x => x.Name)
+                .ToArray();
+
+            if (projectCodes.Contains(projectCodeName))
             {
-                var hierarchy = (await _hierarchyRepository.Select(token))
-                    .FirstOrDefault(x => 
-                        x.ObjectId == objectId &&
-                        x.SubObjectId == subObjectId);
-
-                if (hierarchy == null)
-                {
-                    return new BaseResponse<bool>
-                    {
-                        Description = "Link hierarchy not found",
-                        ErrorCodes = ErrorCodes.LinkNotFound
-                    };
-                }
-
-                var projectCodes = (await _projectCodeRepository.Select(token))
-                    .Select(x => x.Name)
-                    .ToArray();
-
-                if (projectCodes.Contains(projectCodeName))
-                {
-                    return new BaseResponse<bool>
-                    {
-                        Description = "Project code already exist",
-                        ErrorCodes = ErrorCodes.ProjectCodeAlreadyExist
-                    };
-                }
-
-                return new BaseResponse<bool>
-                {
-                    Data = await _projectCodeRepository.Insert(
-                        new ProjectCode
-                        {
-                            HierarchyId = hierarchy.Id,
-                            Name = projectCodeName
-                        }, token),
-                    ErrorCodes = ErrorCodes.Ok
-                };
+                throw new ProjectCodeAlreadyExistException(projectCodeName);
             }
-            catch (Exception ex)
-            {
-                return new BaseResponse<bool>()
+
+            return await _projectCodeRepository.Insert(
+                new ProjectCode
                 {
-                    Description = $"[CreateNewProjectCode] : {ex.Message}",
-                    ErrorCodes = ErrorCodes.ServerError
-                };
-            }
+                    HierarchyId = hierarchyId,
+                    Name = projectCodeName
+                }, token);
         }
 
-        public async Task<IBaseResponse<bool>> DeleteProjectCode(
+        public async Task<bool> DeleteProjectCode(
             int projectCodeId,
             CancellationToken token)
         {
-            var response = new BaseResponse<bool>();
-            try
+            var projectCode = await _projectCodeRepository.Get(projectCodeId, token);
+            
+            if (projectCode == null)
             {
-                var projectCode = await _projectCodeRepository.Get(projectCodeId, token);
-                
-                if (projectCode == null)
-                {
-                    return new BaseResponse<bool>
-                    {
-                        Description = "Project code not found",
-                        ErrorCodes = ErrorCodes.ProjectCodeNotFound
-                    };
-                }
-
-                var result = await _projectCodeRepository.Delete(projectCode, token);
-                
-                return new BaseResponse<bool>
-                {
-                    Data = result,
-                    ErrorCodes = ErrorCodes.Ok
-                };
+                throw new ProjectCodeNotFoundException(projectCodeId: projectCodeId);
             }
-            catch (Exception ex)
-            {
-                return new BaseResponse<bool>()
-                {
-                    Description = $"[DeleteProjectCode] : {ex.Message}",
-                    ErrorCodes = ErrorCodes.ServerError
-                };
-            }
-        }
 
-        public async Task<IBaseResponse<IEnumerable<ProjectCode>>> GetProjectCodes(CancellationToken token)
+            return await _projectCodeRepository.Delete(projectCode, token);
+            }
+
+        public async Task<IEnumerable<ProjectCode>> GetProjectCodes(CancellationToken token)
         {
-            try
+            var projectCodes = (await _projectCodeRepository.Select(token)).ToArray();
+            if (!projectCodes.Any())
             {
-                var projectCodes = await _projectCodeRepository.Select(token);
-                if (!projectCodes.Any())
-                {
-                    return new BaseResponse<IEnumerable<ProjectCode>>
-                    {
-                        Description = "Project codes not found",
-                        ErrorCodes = ErrorCodes.ProjectCodesNotFound
-                    };
-                }
-                
-                return new BaseResponse<IEnumerable<ProjectCode>>
-                {
-                    Data = projectCodes.OrderBy(x => x.Name).ToArray(),
-                    ErrorCodes = ErrorCodes.Ok
-                };
+                throw new ProjectCodesNotFoundException();
             }
-            catch (Exception ex)
-            {
-                return new BaseResponse<IEnumerable<ProjectCode>>
-                {
-                    Description = $"[GetProjectCodes] : {ex.Message}",
-                    ErrorCodes = ErrorCodes.ServerError
-                };
-            }
+
+            return projectCodes.OrderBy(x => x.Name);
         }
 
-        public async Task<IBaseResponse<ProjectCode>> GetProjectCodeByName(
+        public async Task<ProjectCode> GetProjectCodeByName(
             string name,
             CancellationToken token)
         {
-            try
-            {
-                var projectCodes = await _projectCodeRepository.Select(token);
-                var projectCode = projectCodes.FirstOrDefault(x => x.Name == name);
+            var projectCodes = await _projectCodeRepository.Select(token);
+            var projectCode = projectCodes.FirstOrDefault(x => x.Name == name);
 
-                if (projectCode == null)
-                {
-                    return new BaseResponse<ProjectCode>
-                    {
-                        Description = "Project code not found",
-                        ErrorCodes = ErrorCodes.ProjectCodeNotFound
-                    };
-                }
-                
-                return new BaseResponse<ProjectCode>
-                {
-                    Data = projectCode,
-                    ErrorCodes = ErrorCodes.Ok
-                };
-            }
-            catch (Exception ex)
+            if (projectCode == null)
             {
-                return new BaseResponse<ProjectCode>
-                {
-                    Description = $"[GetProjectCodeByName] : {ex.Message}",
-                    ErrorCodes = ErrorCodes.ServerError
-                };
+                throw new ProjectCodeNotFoundException(projectCodeName: name);
             }
+
+            return projectCode;
         }
 
-        public async Task<IBaseResponse<bool>> RenameProjectCode(
+        public async Task<bool> RenameProjectCode(
             int id,
             string newName,
             CancellationToken token)
         {
-            try
+            var projectCode = await _projectCodeRepository.Get(id, token);
+            if (projectCode == null)
             {
-                var projectCode = await _projectCodeRepository.Get(id, token);
-                if (projectCode == null)
-                {
-                    return new BaseResponse<bool>
-                    {
-                        Description = "Project code not found",
-                        ErrorCodes = ErrorCodes.ProjectCodeNotFound
-                    };
-                }
-
-                projectCode.Name = newName;
-
-                var response = await _projectCodeRepository.Update(projectCode, token);
-
-                return new BaseResponse<bool>
-                {
-                    Data = response.Entity.Name == newName,
-                    ErrorCodes = ErrorCodes.Ok
-                };
+                throw new ProjectCodeNotFoundException(projectCodeId: id);
             }
-            catch (Exception ex)
-            {
-                return new BaseResponse<bool>
-                {
-                    Description = $"[RenameProjectCode] : {ex.Message}",
-                    ErrorCodes = ErrorCodes.ServerError
-                };
+
+            projectCode.Name = newName;
+            var response = await _projectCodeRepository.Update(projectCode, token);
+
+            return response.Entity.Name == newName;
             }
-            
-        }
     }
 }
