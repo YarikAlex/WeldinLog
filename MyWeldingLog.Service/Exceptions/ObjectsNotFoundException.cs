@@ -1,3 +1,4 @@
+using MyWeldingLog.Models.Enums;
 using MyWeldingLog.Service.Exceptions.BaseException;
 
 namespace MyWeldingLog.Service.Exceptions
@@ -6,7 +7,8 @@ namespace MyWeldingLog.Service.Exceptions
     {
         public ObjectsNotFoundException()
         {
-            
+            Code = ErrorCodes.ObjectsNotFound;
+            Message = "Objects not exist in database.";
         }
     }
 }

@@ -1,3 +1,4 @@
+using MyWeldingLog.Models.Enums;
 using MyWeldingLog.Service.Exceptions.BaseException;
 
 namespace MyWeldingLog.Service.Exceptions
@@ -11,6 +12,9 @@ namespace MyWeldingLog.Service.Exceptions
         {
             ObjectId = objectId!.Value;
             ObjectName = objectName;
+
+            Code = ErrorCodes.ObjectNotFound;
+            Message = $"Object {(ObjectId.HasValue ? ObjectId.Value : ObjectName)} not found.";
         }
     }
 }

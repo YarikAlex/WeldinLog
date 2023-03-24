@@ -1,3 +1,4 @@
+using MyWeldingLog.Models.Enums;
 using MyWeldingLog.Service.Exceptions.BaseException;
 
 namespace MyWeldingLog.Service.Exceptions
@@ -12,6 +13,10 @@ namespace MyWeldingLog.Service.Exceptions
         {
             SubObjectId = subObjectId;
             SubObjectName = subObjectName;
+
+            Code = ErrorCodes.SubObjectNotFound;
+            Message = $"SubObject {(SubObjectId.HasValue ? SubObjectId.Value : SubObjectName)} not found.";
+            Details = new { SubObjectId, SubObjectName };
         }
     }
 }
