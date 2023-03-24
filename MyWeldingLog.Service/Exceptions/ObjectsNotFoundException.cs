@@ -1,6 +1,6 @@
 using MyWeldingLog.Service.Exceptions.BaseException;
 
-namespace MyWeldingLog.Service.Exceptions.ExceptionHandler
+namespace MyWeldingLog.Service.Exceptions
 {
     public class ObjectsNotFoundException : WeldingLogException
     {

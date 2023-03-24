@@ -19,7 +19,7 @@ namespace MyWeldingLog.DAL.Repositories.ProjectMaterials
             return true;
         }
 
-        public async Task<ProjectMaterial[]> Select(CancellationToken token)
+        public async Task<IEnumerable<ProjectMaterial>> Select(CancellationToken token)
         {
             return await _db.ProjectMaterials.ToArrayAsync(cancellationToken: token);
         }
@@ -31,14 +31,14 @@ namespace MyWeldingLog.DAL.Repositories.ProjectMaterials
             return true;
         }
 
-        public async Task<bool> InsertProjectMaterials(ProjectMaterial[] entities, CancellationToken token)
+        public async Task<bool> InsertProjectMaterials(IEnumerable<ProjectMaterial> entities, CancellationToken token)
         {
-            await _db.ProjectMaterials.AddRangeAsync(entities);
+            await _db.ProjectMaterials.AddRangeAsync(entities, token);
             await _db.SaveChangesAsync(token);
             return true;
         }
 
-        public async Task<bool> DeleteProjectMaterials(ProjectMaterial[] entities, CancellationToken token)
+        public async Task<bool> DeleteProjectMaterials(IEnumerable<ProjectMaterial> entities, CancellationToken token)
         {
             _db.ProjectMaterials.UpdateRange(entities);
             await _db.SaveChangesAsync(token);

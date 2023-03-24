@@ -5,7 +5,7 @@ namespace MyWeldingLog.Models.Hierarchy
         public int Id { get; set; }
         
         /// <summary>
-        /// Название объекта стройки.
+        /// Название объекта строительства.
         /// </summary>
         public string Name { get; set; }
     }

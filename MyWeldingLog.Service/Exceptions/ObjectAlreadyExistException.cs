@@ -1,4 +1,3 @@
-using MyWeldingLog.Models.Enums;
 using MyWeldingLog.Service.Exceptions.BaseException;
 
 namespace MyWeldingLog.Service.Exceptions

@@ -21,7 +21,7 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             return true;
         }
 
-        public async Task<Models.Hierarchy.Hierarchy[]> Select(CancellationToken token)
+        public async Task<IEnumerable<Models.Hierarchy.Hierarchy>> Select(CancellationToken token)
         {
             return await _db.Hierarchy.ToArrayAsync(cancellationToken: token);
         }

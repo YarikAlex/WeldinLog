@@ -36,7 +36,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return new BaseResponse<bool>
                     {
                         Description = "Link hierarchy not found",
-                        StatusCode = StatusCode.LinkNotFound
+                        ErrorCodes = ErrorCodes.LinkNotFound
                     };
                 }
 
@@ -49,7 +49,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return new BaseResponse<bool>
                     {
                         Description = "Project code already exist",
-                        StatusCode = StatusCode.ProjectCodeAlreadyExist
+                        ErrorCodes = ErrorCodes.ProjectCodeAlreadyExist
                     };
                 }
 
@@ -61,7 +61,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                             HierarchyId = hierarchy.Id,
                             Name = projectCodeName
                         }, token),
-                    StatusCode = StatusCode.Ok
+                    ErrorCodes = ErrorCodes.Ok
                 };
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>()
                 {
                     Description = $"[CreateNewProjectCode] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
         }
@@ -88,7 +88,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return new BaseResponse<bool>
                     {
                         Description = "Project code not found",
-                        StatusCode = StatusCode.ProjectCodeNotFound
+                        ErrorCodes = ErrorCodes.ProjectCodeNotFound
                     };
                 }
 
@@ -97,7 +97,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>
                 {
                     Data = result,
-                    StatusCode = StatusCode.Ok
+                    ErrorCodes = ErrorCodes.Ok
                 };
             }
             catch (Exception ex)
@@ -105,7 +105,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>()
                 {
                     Description = $"[DeleteProjectCode] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
         }
@@ -120,14 +120,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return new BaseResponse<IEnumerable<ProjectCode>>
                     {
                         Description = "Project codes not found",
-                        StatusCode = StatusCode.ProjectCodesNotFound
+                        ErrorCodes = ErrorCodes.ProjectCodesNotFound
                     };
                 }
                 
                 return new BaseResponse<IEnumerable<ProjectCode>>
                 {
                     Data = projectCodes.OrderBy(x => x.Name).ToArray(),
-                    StatusCode = StatusCode.Ok
+                    ErrorCodes = ErrorCodes.Ok
                 };
             }
             catch (Exception ex)
@@ -135,7 +135,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<IEnumerable<ProjectCode>>
                 {
                     Description = $"[GetProjectCodes] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
         }
@@ -154,14 +154,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return new BaseResponse<ProjectCode>
                     {
                         Description = "Project code not found",
-                        StatusCode = StatusCode.ProjectCodeNotFound
+                        ErrorCodes = ErrorCodes.ProjectCodeNotFound
                     };
                 }
                 
                 return new BaseResponse<ProjectCode>
                 {
                     Data = projectCode,
-                    StatusCode = StatusCode.Ok
+                    ErrorCodes = ErrorCodes.Ok
                 };
             }
             catch (Exception ex)
@@ -169,7 +169,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<ProjectCode>
                 {
                     Description = $"[GetProjectCodeByName] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
         }
@@ -187,7 +187,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return new BaseResponse<bool>
                     {
                         Description = "Project code not found",
-                        StatusCode = StatusCode.ProjectCodeNotFound
+                        ErrorCodes = ErrorCodes.ProjectCodeNotFound
                     };
                 }
 
@@ -198,7 +198,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>
                 {
                     Data = response.Entity.Name == newName,
-                    StatusCode = StatusCode.Ok
+                    ErrorCodes = ErrorCodes.Ok
                 };
             }
             catch (Exception ex)
@@ -206,7 +206,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>
                 {
                     Description = $"[RenameProjectCode] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
             

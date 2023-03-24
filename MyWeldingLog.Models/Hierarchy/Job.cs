@@ -24,7 +24,7 @@ namespace MyWeldingLog.Models.Hierarchy
         public int ProjectMaterialId { get; set; }
         
         /// <summary>
-        /// Количество испоьзуемого материала в данной работе
+        /// Количество используемого материала в данной работе
         /// </summary>
         public double Quantity { get; set; }
     }

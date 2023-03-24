@@ -22,7 +22,7 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             return true;
         }
 
-        public async Task<SubObject[]> Select(CancellationToken token)
+        public async Task<IEnumerable<SubObject>> Select(CancellationToken token)
         {
             return await _db.SubObjects.ToArrayAsync(token);
         }

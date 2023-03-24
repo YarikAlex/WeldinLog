@@ -4,7 +4,7 @@ namespace MyWeldingLog.DAL.Interfaces
     {
         Task<bool> Insert(T entity, CancellationToken token);
         
-        Task<T[]> Select(CancellationToken token);
+        Task<IEnumerable<T>> Select(CancellationToken token);
 
         Task<bool> Delete(T entity, CancellationToken token);
     }

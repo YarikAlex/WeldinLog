@@ -19,7 +19,7 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             return true;
         }
 
-        public async Task<Cluster[]> Select(CancellationToken token)
+        public async Task<IEnumerable<Cluster>> Select(CancellationToken token)
         {
             return await _db.Clusters.ToArrayAsync(cancellationToken: token);
         }

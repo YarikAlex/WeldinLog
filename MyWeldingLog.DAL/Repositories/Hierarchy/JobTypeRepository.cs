@@ -19,7 +19,7 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
            return true;
         }
 
-        public async Task<JobType[]> Select(CancellationToken token)
+        public async Task<IEnumerable<JobType>> Select(CancellationToken token)
         {
             return await _db.JobTypes.ToArrayAsync(cancellationToken: token);
         }

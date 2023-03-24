@@ -3,6 +3,7 @@ using MyWeldingLog.Models.Enums;
 using MyWeldingLog.Models.Hierarchy;
 using MyWeldingLog.Models.Responses;
 using MyWeldingLog.Models.Responses.Interfaces;
+using MyWeldingLog.Service.Exceptions;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog.Service.Implementations.Hierarchy
@@ -16,178 +17,82 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             _subObjectRepository = subObjectRepository;
         }
 
-        public async Task<IBaseResponse<bool>> CreateNewSubObject(
+        public async Task<bool> CreateNewSubObject(
             string name,
             CancellationToken token)
         {
-            try
-            {
-                var objects = (await _subObjectRepository.Select(token))
-                    .Select(s => s.Name)
-                    .ToArray();
+            var objects = (await _subObjectRepository.Select(token))
+                .Select(s => s.Name)
+                .ToArray();
 
-                if (objects.Contains(name))
-                {
-                    return new BaseResponse<bool>
-                    {
-                        Description = "SubObject already exist",
-                        StatusCode = StatusCode.SubObjectAlreadyExist
-                    };
-                }
-                var newSubObject = new SubObject { Name = name };
-                var result = await _subObjectRepository.Insert(newSubObject, token);
-
-                return new BaseResponse<bool>
-                {
-                    Data = result,
-                    StatusCode = StatusCode.Ok
-                };
-            }
-            catch (Exception ex)
+            if (objects.Contains(name))
             {
-                return new BaseResponse<bool>()
-                {
-                    Description = $"[CreateNewSubObject] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
-                };
+                throw new SubObjectAlreadyExistException(name);
             }
+            var newSubObject = new SubObject { Name = name };
+            var result = await _subObjectRepository.Insert(newSubObject, token);
+
+            return result;
         }
 
-        public async Task<IBaseResponse<SubObject>> GetSubObjectByName(
+        public async Task<SubObject> GetSubObjectByName(
             string name,
             CancellationToken token)
         {
-            try
+            var subObjects = await _subObjectRepository.Select(token);
+            var subObject = subObjects.FirstOrDefault(x => x.Name == name);
+            
+            if (subObject == null)
             {
-                var subObjects = await _subObjectRepository.Select(token);
-                var subObject = subObjects.FirstOrDefault(x => x.Name == name);
-                
-                if (subObject == null)
-                {
-                    return new BaseResponse<SubObject>
-                    {
-                        Description = "SubObject not found",
-                        StatusCode = StatusCode.SubObjectNotFound
-                    };
-                }
+                throw new SubObjectNotFoundException(subObjectName: name);
+            }
 
-                return new BaseResponse<SubObject>
-                {
-                    Data = subObject,
-                    StatusCode = StatusCode.Ok
-                };
-            }
-            catch (Exception ex)
-            {
-                return new BaseResponse<SubObject>()
-                {
-                    Description = $"[GetSubObjectByName] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
-                };
-            }
+            return subObject;
         }
 
-        public async Task<IBaseResponse<IEnumerable<SubObject>>> GetSubObjects(
+        public async Task<IEnumerable<SubObject>> GetSubObjects(
             CancellationToken token)
         {
-            try
+            var subObjects = await _subObjectRepository.Select(token);
+            
+            if (!subObjects.Any())
             {
-                var subObjects = await _subObjectRepository.Select(token);
-                
-                if (!subObjects.Any())
-                {
-                    return new BaseResponse<IEnumerable<SubObject>>
-                    {
-                        Description = "Sub object not found",
-                        StatusCode = StatusCode.SubObjectNotFound
-                    };
-                }
-                
-                return new BaseResponse<IEnumerable<SubObject>>
-                {
-                    Data = subObjects.OrderBy(x => x.Name).ToArray(),
-                    StatusCode = StatusCode.Ok
-                };
+                throw new SubObjectsNotFoundException();
             }
-            catch (Exception ex)
-            {
-                return new BaseResponse<IEnumerable<SubObject>>
-                {
-                    Description = $"[GetSubObjects] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
-                };
-            }
+
+            return subObjects;
         }
 
-        public async Task<IBaseResponse<bool>> DeleteSubObject(
+        public async Task<bool> DeleteSubObject(
             int id,
             CancellationToken token)
         {
-            try
-            {
-                var deletingObject = await _subObjectRepository.Get(id, token);
+            var deletingObject = await _subObjectRepository.Get(id, token);
                 
-                if (deletingObject == null)
-                {
-                    return new BaseResponse<bool>
-                    {
-                        Description = "SubObject not found",
-                        StatusCode = StatusCode.SubObjectNotFound
-                    };
-                }
-                
-                var result = await _subObjectRepository.Delete(deletingObject, token);
-                return new BaseResponse<bool>
-                {
-                    Data = result,
-                    StatusCode = StatusCode.Ok
-                };
-            }
-            catch (Exception ex)
+            if (deletingObject == null)
             {
-                return new BaseResponse<bool>()
-                {
-                    Description = $"[DeleteSubObject] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
-                };
+                throw new SubObjectNotFoundException(id);
             }
+            
+            var result = await _subObjectRepository.Delete(deletingObject, token);
+            return result;
         }
 
-        public async Task<IBaseResponse<bool>> RenameSubObject(
+        public async Task<bool> RenameSubObject(
             int id,
             string newName,
             CancellationToken token)
         {
-            try
+            var subObject = await _subObjectRepository.Get(id, token);
+            if (subObject == null)
             {
-                var subObject = await _subObjectRepository.Get(id, token);
-                if (subObject == null)
-                {
-                    return new BaseResponse<bool>
-                    {
-                        Description = "Project code not found",
-                        StatusCode = StatusCode.ProjectCodeNotFound
-                    };
-                }
-
-                subObject.Name = newName;
-
-                var response = await _subObjectRepository.Update(subObject, token);
-
-                return new BaseResponse<bool>
-                {
-                    Data = response.Entity.Name == newName,
-                    StatusCode = StatusCode.Ok
-                };
+                throw new SubObjectNotFoundException(id);
             }
-            catch (Exception ex)
-            {
-                return new BaseResponse<bool>
-                {
-                    Description = $"[RenameProjectCode] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
-                };
-            }
+
+            subObject.Name = newName;
+            var response = await _subObjectRepository.Update(subObject, token);
+
+            return response.Entity.Name == newName;
         }
     }
 }

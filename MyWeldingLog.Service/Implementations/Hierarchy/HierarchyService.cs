@@ -33,12 +33,12 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 var obj = await _objectService.GetObjectByName(objectName, token);
                 var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
 
-                if (obj == null || subObject.Data == null)
+                if (obj == null || subObject == null)
                 {
                     return new BaseResponse<bool>
                     {
                         Description = "Object or SubObject not found",
-                        StatusCode = StatusCode.ObjectNotFound
+                        ErrorCodes = ErrorCodes.ObjectNotFound
                     };
                 }
                 
@@ -46,19 +46,19 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 var hierarchy = hierarchies.FirstOrDefault(
                     x =>
                         x.ObjectId == obj.Id &&
-                        x.SubObjectId == subObject.Data.Id);
+                        x.SubObjectId == subObject.Id);
 
                 if (hierarchy != null)
                 {
                     response.Description = "Link already exists";
-                    response.StatusCode = StatusCode.LinkAlreadyExist;
+                    response.ErrorCodes = ErrorCodes.LinkAlreadyExist;
                     return response;
                 }
                 
                 var newLine = new Models.Hierarchy.Hierarchy
                 {
                     ObjectId = obj.Id,
-                    SubObjectId = subObject.Data.Id
+                    SubObjectId = subObject.Id
                 };
                 response.Data = await _hierarchyRepository.Insert(newLine, token);
                 return response;
@@ -68,7 +68,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>()
                 {
                     Description = $"[AddNewSubObjectInObject] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
         }
@@ -84,24 +84,24 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 var obj = await _objectService.GetObjectByName(objectName, token);
                 var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
 
-                if (obj == null || subObject.Data == null)
+                if (obj == null || subObject == null)
                 {
                     return new BaseResponse<bool>
                     {
                         Description = "Object or SubObject not found",
-                        StatusCode = StatusCode.ObjectNotFound
+                        ErrorCodes = ErrorCodes.ObjectNotFound
                     };
                 }
                 var hierarchies = await _hierarchyRepository.Select(token);
 
                 var hierarchy = hierarchies.FirstOrDefault(x => 
                     x.ObjectId == obj.Id &&
-                    x.SubObjectId == subObject.Data.Id);
+                    x.SubObjectId == subObject.Id);
 
                 if (hierarchy == null)
                 {
                     response.Description = "Link not found";
-                    response.StatusCode = StatusCode.LinkNotFound;
+                    response.ErrorCodes = ErrorCodes.LinkNotFound;
                     return response;
                 }
                 response.Data = await _hierarchyRepository.Delete(hierarchy, token);
@@ -112,7 +112,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<bool>()
                 {
                     Description = $"[DeleteSubObjectFromObject] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
         }
@@ -134,14 +134,14 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                     return new BaseResponse<int>
                     {
                         Description = "Link not found",
-                        StatusCode = StatusCode.LinkNotFound
+                        ErrorCodes = ErrorCodes.LinkNotFound
                     };
                 }
 
                 return new BaseResponse<int>
                 {
                     Data = hierarchy.Id,
-                    StatusCode = StatusCode.Ok
+                    ErrorCodes = ErrorCodes.Ok
                 };
             }
             catch (Exception ex)
@@ -149,7 +149,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
                 return new BaseResponse<int>()
                 {
                     Description = $"[GetHierarchyId] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
+                    ErrorCodes = ErrorCodes.ServerError
                 };
             }
         }

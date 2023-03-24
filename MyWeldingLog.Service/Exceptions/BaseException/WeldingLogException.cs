@@ -4,7 +4,7 @@ namespace MyWeldingLog.Service.Exceptions.BaseException
 {
     public class WeldingLogException : Exception
     {
-        public StatusCode Code { get; set; }
+        public ErrorCodes Code { get; set; }
         public string Message { get; set; }
         public object Details { get; set; }
 
@@ -13,7 +13,7 @@ namespace MyWeldingLog.Service.Exceptions.BaseException
             
         }
 
-        public WeldingLogException(StatusCode code, string message, object details)
+        public WeldingLogException(ErrorCodes code, string message, object details)
         {
             Code = code;
             Message = message;
