@@ -21,6 +21,10 @@ namespace MyWeldingLog.Models.Enums
         //ProjectCodes
         ProjectCodeAlreadyExist,
         ProjectCodeNotFound,
-        ProjectCodesNotFound
+        ProjectCodesNotFound,
+        
+        //Clusters
+        ClusterAlreadyExist,
+        ClusterNotFound
     }
 }

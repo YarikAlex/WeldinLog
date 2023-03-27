@@ -30,5 +30,23 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             await _db.SaveChangesAsync(token);
             return true;
         }
+
+        public async Task<Cluster> GetByName(string name, CancellationToken token)
+        {
+            var clusters = await _db.Clusters
+                .Where(x => x.Name == name)
+                .ToArrayAsync(token);
+
+            var cluster = clusters.FirstOrDefault();
+            return cluster;
+        }
+
+        public async Task<Cluster> Update(Cluster cluster, CancellationToken token)
+        {
+            var result = _db.Clusters.Update(cluster);
+            await _db.SaveChangesAsync(token);
+
+            return result.Entity;
+        }
     }
 }

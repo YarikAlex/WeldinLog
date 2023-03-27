@@ -9,14 +9,6 @@ namespace MyWeldingLog.Models.Hierarchy
         /// </summary>
         public string Name { get; set; }
         
-        /// <summary>
-        /// Идентификатор объекта, в который входит участок
-        /// </summary>
-        public int ObjectId { get; set; }
-        
-        /// <summary>
-        /// Идентификатор подобъекта, в который входит участок
-        /// </summary>
-        public int SubObjectId { get; set; }
+        public int HierarchyId { get; set; }
     }
 }
