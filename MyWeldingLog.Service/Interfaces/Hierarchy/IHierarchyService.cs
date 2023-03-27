@@ -1,10 +1,22 @@
-using MyWeldingLog.DAL.Interfaces;
 using MyWeldingLog.Models.Responses.Interfaces;
 
 namespace MyWeldingLog.Service.Interfaces.Hierarchy
 {
     public interface IHierarchyService
     {
-        Task<IBaseResponse<bool>> AddNewSubObjectInObject(int objectId, int subObjectId);
+        Task<bool> AddNewSubObjectInObject(
+            string objectName,
+            string subObjectName,
+            CancellationToken token);
+
+        Task<bool> DeleteSubObjectFromObject(
+            string objectName,
+            string subObjectName,
+            CancellationToken token);
+
+        Task<int> GetHierarchyId(
+            int objectId,
+            int subObjectId,
+            CancellationToken token);
     }
 }

@@ -5,6 +5,6 @@ namespace MyWeldingLog.Models.Responses.Interfaces
     public interface IBaseResponse<T>
     {
         T Data { get; }
-        StatusCode StatusCode { get; }
+        ErrorCodes ErrorCodes { get; }
     }
 }

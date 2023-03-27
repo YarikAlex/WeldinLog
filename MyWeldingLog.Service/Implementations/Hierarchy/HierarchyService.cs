@@ -1,7 +1,5 @@
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
-using MyWeldingLog.Models.Enums;
-using MyWeldingLog.Models.Responses;
-using MyWeldingLog.Models.Responses.Interfaces;
+using MyWeldingLog.Service.Exceptions;
 using MyWeldingLog.Service.Interfaces.Hierarchy;
 
 namespace MyWeldingLog.Service.Implementations.Hierarchy
@@ -9,46 +7,89 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
     public class HierarchyService : IHierarchyService
     {
         private readonly IHierarchyRepository _hierarchyRepository;
+        private readonly IObjectService _objectService;
+        private readonly ISubObjectService _subObjectService;
 
-        public HierarchyService(IHierarchyRepository hierarchyRepository)
+        public HierarchyService(
+            IHierarchyRepository hierarchyRepository,
+            IObjectService objectService,
+            ISubObjectService subObjectService)
         {
             _hierarchyRepository = hierarchyRepository;
+            _objectService = objectService;
+            _subObjectService = subObjectService;
         }
 
-        public async Task<IBaseResponse<bool>> AddNewSubObjectInObject(int objectId, int subObjectId)
+        public async Task<bool> AddNewSubObjectInObject(
+            string objectName,
+            string subObjectName,
+            CancellationToken token)
         {
-            var response = new BaseResponse<bool>();
-            try
-            {
-                var lines = await _hierarchyRepository.Select();
-                lines = lines.Where(line => 
-                    line.ObjectId == objectId && 
-                    line.SubObjectId == subObjectId)
-                    .ToArray();
+            var obj = await _objectService.GetObjectByName(objectName, token);
+            var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
 
-                if (lines.Length != 0)
-                {
-                    response.Description = "Link already exists";
-                    response.StatusCode = StatusCode.LinkAlreadyExist;
-                    return response;
-                }
-                
-                var newLine = new Models.Hierarchy.Hierarchy
-                {
-                    ObjectId = objectId,
-                    SubObjectId = subObjectId
-                };
-                response.Data = await _hierarchyRepository.Insert(newLine);
-                return response;
-            }
-            catch (Exception ex)
+            var hierarchies = await _hierarchyRepository.Select(token);
+            var hierarchy = hierarchies.FirstOrDefault(
+                x =>
+                    x.ObjectId == obj.Id &&
+                    x.SubObjectId == subObject.Id);
+
+            if (hierarchy != null)
             {
-                return new BaseResponse<bool>()
-                {
-                    Description = $"[AddNewSubObjectInObject] : {ex.Message}",
-                    StatusCode = StatusCode.InternalServerError
-                };
+                throw new LinkAlreadyExistException(objectName, subObjectName);
             }
+
+            var response = await _hierarchyRepository.Insert(
+                entity: new Models.Hierarchy.Hierarchy 
+                {
+                    ObjectId = obj.Id,
+                    SubObjectId = subObject.Id
+                },
+                token);
+            
+            return response;
+        }
+
+        public async Task<bool> DeleteSubObjectFromObject(
+            string objectName,
+            string subObjectName,
+            CancellationToken token)
+        {
+            var obj = await _objectService.GetObjectByName(objectName, token);
+            var subObject = await _subObjectService.GetSubObjectByName(subObjectName, token);
+
+            var hierarchies = await _hierarchyRepository.Select(token);
+
+            var hierarchy = hierarchies.FirstOrDefault(x => 
+                x.ObjectId == obj.Id &&
+                x.SubObjectId == subObject.Id);
+
+            if (hierarchy == null)
+            {
+                throw new LinkNotFoundException(objectName, subObjectName);
+            }
+            
+            var response = await _hierarchyRepository.Delete(hierarchy, token);
+            
+            return response;
+        }
+
+        public async Task<int> GetHierarchyId(
+            int objectId,
+            int subObjectId,
+            CancellationToken token)
+        {
+            var hierarchies = await _hierarchyRepository.Select(token);
+            var hierarchy = hierarchies.FirstOrDefault(x => 
+                x.ObjectId == objectId && 
+                x.SubObjectId == subObjectId);
+
+            if (hierarchy == null)
+            {
+                throw new LinkNotFoundException(objectId, subObjectId);
+            }
+
+            return hierarchy.Id;
         }
     }
 }

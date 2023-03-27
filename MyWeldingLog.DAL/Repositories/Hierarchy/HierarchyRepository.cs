@@ -12,22 +12,26 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             _db = db;
         }
 
-        public async Task<bool> Insert(Models.Hierarchy.Hierarchy entity)
+        public async Task<bool> Insert(
+            Models.Hierarchy.Hierarchy entity,
+            CancellationToken token)
         {
-            await _db.Hierarchies.AddAsync(entity);
-            await _db.SaveChangesAsync();
+            await _db.Hierarchy.AddAsync(entity, token);
+            await _db.SaveChangesAsync(token);
             return true;
         }
 
-        public async Task<Models.Hierarchy.Hierarchy[]> Select()
+        public async Task<IEnumerable<Models.Hierarchy.Hierarchy>> Select(CancellationToken token)
         {
-            return await _db.Hierarchies.ToArrayAsync();
+            return await _db.Hierarchy.ToArrayAsync(cancellationToken: token);
         }
 
-        public async Task<bool> Delete(Models.Hierarchy.Hierarchy entity)
+        public async Task<bool> Delete(
+            Models.Hierarchy.Hierarchy entity,
+            CancellationToken token)
         {
-            _db.Hierarchies.Remove(entity);
-            await _db.SaveChangesAsync();
+            _db.Hierarchy.Remove(entity);
+            await _db.SaveChangesAsync(token);
             return true;
         }
     }
