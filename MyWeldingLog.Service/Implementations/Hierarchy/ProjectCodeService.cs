@@ -22,6 +22,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
         }
 
         public async Task<bool> CreateNewProjectCode(
+            ///TODO: изменить контракты на objectName и subObjectName
             int objectId,
             int subObjectId,
             string projectCodeName,
@@ -50,7 +51,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             int projectCodeId,
             CancellationToken token)
         {
-            var projectCode = await _projectCodeRepository.Get(projectCodeId, token);
+            var projectCode = await _projectCodeRepository.GetById(projectCodeId, token);
             
             if (projectCode == null)
             {
@@ -91,7 +92,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             string newName,
             CancellationToken token)
         {
-            var projectCode = await _projectCodeRepository.Get(id, token);
+            var projectCode = await _projectCodeRepository.GetById(id, token);
             if (projectCode == null)
             {
                 throw new ProjectCodeNotFoundException(projectCodeId: id);
@@ -100,7 +101,7 @@ namespace MyWeldingLog.Service.Implementations.Hierarchy
             projectCode.Name = newName;
             var response = await _projectCodeRepository.Update(projectCode, token);
 
-            return response.Entity.Name == newName;
+            return response.Name == newName;
             }
     }
 }

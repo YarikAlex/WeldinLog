@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyWeldingLog.DAL.Interfaces.Hierarchy;
 using MyWeldingLog.Models.Hierarchy;
-using Object = MyWeldingLog.Models.Hierarchy.Object;
 
 namespace MyWeldingLog.DAL.Repositories.Hierarchy
 {
@@ -36,22 +35,24 @@ namespace MyWeldingLog.DAL.Repositories.Hierarchy
             return true;
         }
 
-        public async Task<ProjectCode?> Get(
+        public async Task<ProjectCode> GetById(
             int id,
             CancellationToken token)
         {
-            var projectCodes = await _db.ProjectCodes.ToArrayAsync(cancellationToken: token);
-            var result = projectCodes.FirstOrDefault(o => o.Id == id);
+            var projectCodes = await _db.ProjectCodes
+                .Where(x => x.Id == id)
+                .ToArrayAsync(cancellationToken: token);
+            var result = projectCodes.FirstOrDefault();
             return result;
         }
 
-        public async Task<EntityEntry<ProjectCode>> Update(
+        public async Task<ProjectCode> Update(
             ProjectCode entity,
             CancellationToken token)
         {
             var result = _db.ProjectCodes.Update(entity);
             await _db.SaveChangesAsync(token);
-            return result;
+            return result.Entity;
         }
     }
 }
